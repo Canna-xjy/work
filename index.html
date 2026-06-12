@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>激励政策速览 · 华为 &amp; 微信小游戏</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #1a1a2e;
+    background: #f4f4f8;
+    line-height: 1.5;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* === Sidebar === */
+  nav.sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 2rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid #2a2a4e;
+  }
+  nav.sidebar h2 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #8888aa;
+    padding: 0 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  nav.sidebar .tab-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #c0c0dd;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  nav.sidebar .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.06); }
+  nav.sidebar .tab-btn.active { color: #fff; border-left-color: #7c7cf0; background: rgba(255,255,255,0.06); }
+  .tab-sub {
+    display: none;
+    list-style: none;
+    padding: 0 0 0.5rem 0;
+  }
+  .tab-sub.visible { display: block; }
+  .tab-sub a {
+    display: block;
+    padding: 0.3rem 1.5rem 0.3rem 2.5rem;
+    font-size: 0.78rem;
+    color: #8888aa;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .tab-sub a:hover { color: #d0d0ee; }
+
+  /* === Main === */
+  main {
+    flex: 1;
+    max-width: 1440px;
+    padding: 2rem 2rem 4rem;
+    margin: 0 auto;
+  }
+  .platform-view { display: none; }
+  .platform-view.active { display: block; }
+
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    color: #1a1a2e;
+  }
+  .subtitle {
+    color: #999;
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* === Table === */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    table-layout: fixed;
+  }
+  th, td {
+    border: 1px solid #e8e8f0;
+    padding: 0.9rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #1a1a2e;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.88rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+  td { font-size: 0.9rem; color: #333; }
+  td:first-child {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2a2a4e;
+    text-align: center;
+    width: 10%;
+  }
+  td strong { color: #c0392b; font-weight: 700; }
+
+  /* === Tags === */
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  /* 华为 */
+  .tag-game { background: #ddeef5; color: #0f5e7a; }
+  .tag-ocpc { background: #e8ddf5; color: #5f2d8a; }
+  .tag-spark { background: #fcefd6; color: #9a5a10; }
+  .row-game    { background: #fcfdff; }
+  .row-ocpc    { background: #faf9fc; }
+  .row-spark   { background: #fefcf8; }
+  .row-game:hover    { background: #f0f7fb; }
+  .row-ocpc:hover    { background: #f4eff9; }
+  .row-spark:hover   { background: #fcf5e8; }
+  /* 微信 */
+  .tag-iaa   { background: #ddeef5; color: #0f5e7a; }
+  .tag-iap   { background: #fce8e0; color: #b05a2a; }
+  .tag-video { background: #d5f0e6; color: #1a7a5a; }
+  .tag-pc    { background: #fcefd6; color: #9a5a10; }
+  .row-iaa    { background: #fcfdff; }
+  .row-iap    { background: #fefaf8; }
+  .row-video  { background: #f8fdfb; }
+  .row-pc     { background: #fefcf8; }
+  .row-iaa:hover    { background: #f0f7fb; }
+  .row-iap:hover    { background: #fcf0ea; }
+  .row-video:hover  { background: #eaf5f0; }
+  .row-pc:hover     { background: #fcf5e8; }
+
+  /* === Shared === */
+  .sep { color: #ccc; padding: 0 0.2rem; font-weight: 300; }
+  .num { color: #c0392b; font-weight: 700; }
+  .hl-box {
+    display: inline-block;
+    background: #fef6e6;
+    color: #b06a1a;
+    font-weight: 700;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+  .tier { color: #555; font-size: 0.82rem; }
+  .sub-label {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    margin-right: 0.3rem;
+  }
+  .sl-rebate  { background: #4a90d9; }
+  .sl-bonus   { background: #d4922a; }
+  .sl-split   { background: #3a9a7a; }
+  .sl-pay     { background: #8a4ab8; }
+  .sl-cond    { background: #666; }
+  .sl-send    { background: #b8795a; }
+  .inc-item { margin-bottom: 0.5rem; }
+  .inc-item:last-child { margin-bottom: 0; }
+  .link-col { text-align: center; width: 7%; }
+  .link-col a {
+    color: #4a90d9;
+    text-decoration: none;
+    font-size: 0.82rem;
+    word-break: break-all;
+  }
+  .link-col a:hover { text-decoration: underline; color: #1a5a9e; }
+  @media (max-width: 900px) {
+    body { flex-direction: column; }
+    nav.sidebar {
+      width: 100%;
+      height: auto;
+      position: static;
+      padding: 1rem 0;
+      border-right: none;
+      border-bottom: 1px solid #2a2a4e;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    nav.sidebar h2 { display: none; }
+    nav.sidebar .tab-btn { width: auto; border-left: none; border-bottom: 3px solid transparent; padding: 0.5rem 1rem; }
+    nav.sidebar .tab-btn.active { border-left: none; border-bottom-color: #7c7cf0; }
+    .tab-sub { display: none !important; }
+    main { padding: 1.2rem; }
+    th, td { padding: 0.6rem 0.4rem; }
+    td { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h2>政策平台</h2>
+  <button class="tab-btn active" data-tab="huawei">华为鲸鸿动能</button>
+  <ul class="tab-sub visible" data-parent="huawei">
+    <a href="#hw-game">游戏行业激励</a>
+    <a href="#hw-ocpc">oCPC 产品激励</a>
+    <a href="#hw-spark">星火计划</a>
+  </ul>
+  <button class="tab-btn" data-tab="wechat">微信小游戏</button>
+  <ul class="tab-sub" data-parent="wechat">
+    <a href="#wx-iap">虚拟支付激励</a>
+    <a href="#wx-iaa">广告变现激励</a>
+    <a href="#wx-video">视频号激励</a>
+    <a href="#wx-pc">PC 激励</a>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ==================== 华为 ==================== -->
+<div class="platform-view active" id="view-huawei">
+  <h1>2026年鲸鸿动能激励政策速览</h1>
+  <p class="subtitle">三份核心政策要点对比</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:8%">政策</th>
+        <th style="width:17%">定位 &amp; 适用对象</th>
+        <th style="width:68%">核心激励 · 关键条件 · 发放形式</th>
+        <th style="width:7%">原文</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 游戏 -->
+      <tr class="row-game" id="hw-game">
+        <td><span class="tag tag-game">游戏</span><br>游戏行业激励</td>
+        <td>
+          <strong>游戏客户投放返货激励</strong><br>
+          <span class="sep">·</span> 标准联运 HMS 游戏 <span class="sep">·</span> 无需报名
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">返货</span>
+            <strong>IAA</strong>　<span class="tier">10~300万</span> → <span class="num">30%</span>　<span class="sep">|</span>　<span class="tier">≥300万</span> → <span class="num">40%</span><br>
+            <strong>IAP-小游戏</strong>　<span class="tier">10~100万</span> → <span class="num">25%</span>　<span class="sep">|</span>　<span class="tier">≥100万</span> → <span class="num">30%</span><br>
+            <strong>IAP-APK</strong>　<span class="tier">10~300万</span> → <span class="num">70%</span>　<span class="sep">|</span>　<span class="tier">300~600万</span> → <span class="num">80%</span>　<span class="sep">|</span>　<span class="tier">≥600万</span> → <span class="num">90%</span><br>
+            <span class="tier">▸ IAP 按产品维度结算</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-bonus">额外</span>
+            IAA 月活≥30min 另 +<span class="num">5%</span>　<span class="sep">|</span>　IAP-小游戏接入礼包/道具商城另 +<span class="num">5%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-split">分成</span>
+            IAA 新用户广告变现 <strong>华为:开发者=1:9</strong>　<span class="sep">|</span>　小游戏新用户内购 <strong>华为:开发者=2:8</strong><br>
+            <span class="tier">均自用户获取起持续 365 天，到期恢复基础分成</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            消耗门槛 10 万元起 <span class="sep">·</span> IAP 小游戏/APK 限 <strong>HarmonyOS 4.x</strong> 及以下 <span class="sep">·</span> 仅限鲸鸿动能 DSP <span class="sep">·</span> 与年框/大促互斥
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">发放</span>
+            返利金充值 · 月度发放 · 有效期 180 天
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developer.huawei.com/consumer/cn/doc/promotion/ads-yxhyydjl-0000002160474788" target="_blank">→</a></td>
+      </tr>
+      <!-- oCPC -->
+      <tr class="row-ocpc" id="hw-ocpc">
+        <td><span class="tag tag-ocpc">oCPC</span><br>oCPC 产品激励</td>
+        <td>
+          <strong>保障广告前期充分探索</strong><br>
+          <span class="sep">·</span> 所有 oCPC 客户 <span class="sep">·</span> 无需申请
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-pay">赔付</span>
+            <strong>返还 = 实际消耗 − 预期消耗 × (1+偏差)</strong><br>
+            <span class="tier">赔付范围含现金 + 返利金 + 赠送金</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">偏差档位</span>
+            <span class="tier">优先跑量</span> 实际成本偏差 30~<span class="num">430%</span>　<span class="sep">|</span>　<span class="tier">非优先跑量</span> 实际成本偏差 20~<span class="num">420%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-bonus">注意</span>
+            使用 <strong>RTA</strong> 修改出价不予保障
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            保障周期 <strong>20 天</strong>（2×10 天）<span class="sep">·</span> 转化数 ≥<span class="num">6</span>(浅层) / ≥<span class="num">2</span>(深层)<span class="sep">·</span> 每天修改 ≤<span class="num">2</span> 次 <span class="sep">·</span> 出价调整 ≤<span class="num">20%</span><span class="sep">·</span> 欠费暂停，补缴后补发
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">发放</span>
+            返利金充值 · 有效期一年
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developer.huawei.com/consumer/cn/doc/promotion/ads_jlzc_ocpc2-0000001880794312" target="_blank">→</a></td>
+      </tr>
+      <!-- 星火 -->
+      <tr class="row-spark" id="hw-spark">
+        <td><span class="tag tag-spark">星火</span><br>星火计划（竞价）</td>
+        <td>
+          <strong>扶持新客冷启动</strong><br>
+          <span class="sep">·</span> FSD-N1/N2 新客 <span class="sep">·</span> 前 180 天无消耗<br>
+          <span class="sep">·</span> 无需报名
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">返点</span>
+            <span class="hl-box">固定返点 20%</span>　基数：现金消耗　采买：竞价
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            自消耗起 <strong>90 天</strong>内 <span class="sep">·</span> 不跨年 <span class="sep">·</span> 现金消耗 ≥ <span class="num">5 万元</span> <span class="sep">·</span> 仅限鲸鸿动能 DSP <span class="sep">·</span> 与鸿飞/大促互斥
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">发放</span>
+            返利金充值 · 季度发放 · 有效期 180 天
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developer.huawei.com/consumer/cn/doc/promotion/ads-xhjh-0000002139646894" target="_blank">→</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 微信小游戏 ==================== -->
+<div class="platform-view" id="view-wechat">
+  <h1>微信小游戏激励政策速览</h1>
+  <p class="subtitle">四份核心政策要点对比</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:10%">政策</th>
+        <th style="width:17%">定位 &amp; 适用对象</th>
+        <th style="width:66%">核心激励 · 关键条件 · 发放形式</th>
+        <th style="width:7%">原文</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 虚拟支付 -->
+      <tr class="row-iap" id="wx-iap">
+        <td><span class="tag tag-iap">IAP</span><br>虚拟支付激励</td>
+        <td>
+          <strong>IAP内购类小游戏激励方案</strong><br>
+          <span class="sep">·</span> 主要通过虚拟道具、增值服务获得收入<br>
+          <span class="sep">·</span> 包含 iOS 平台特殊政策
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">基础</span>
+            内购流水现金分成 <span class="num">60%</span> <span class="sep">·</span> 基础激励金月流水 <span class="num">10%</span>（广告金·投放解锁）
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-bonus">成长</span>
+            安卓现金投放每满200万 → <span class="num">5%</span>（10万广告金）<span class="sep">·</span> 多次达标多次申领·按天结算
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-split">首发新游</span>
+            <span class="tier">阶段一</span> 首1000万流水不分成，月流水 <span class="num">40%</span> 激励金（上限400万）<br>
+            <span class="tier">阶段二</span> 月流水达1000万解锁，累计4000万一次性得 <span class="num">40%</span>（1600万）<br>
+            <span class="tier">非首发</span> 首100万流水不分成，月流水 <span class="num">40%</span> 激励金（上限40万）<br>
+            <span class="tier">合计上限</span> <span class="hl-box">2000万/款</span> <span class="sep">·</span> 2026 Q1月流水突破50万另+5万加热金
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">额外</span>
+            <strong>首发成长激励金</strong> 每满200万+<span class="num">5%</span>现金 <span class="sep">·</span> <strong>视频号运营激励</strong> <span class="num">10%</span>加热金<br>
+            <strong>iOS</strong> 累计可获得苹果内购流水 <span class="num">88%</span>（含微信15%优惠）
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            首发新游需累计流水>10万后12个月内 <span class="sep">·</span> 26年前游戏有过渡适配方案
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">结算</span>
+            现金 T+30（达标可升级T+1）<span class="sep">·</span> 激励金按月（1号启动·10号前发放）<span class="sep">·</span> 成长金按天·仅安卓渠道 <span class="sep">·</span> 广告金有效期365天
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developers.weixin.qq.com/minigame/introduction/commercialization/guide/virtual-payment.html" target="_blank">→</a></td>
+      </tr>
+      <!-- 广告变现 -->
+      <tr class="row-iaa" id="wx-iaa">
+        <td><span class="tag tag-iaa">IAA</span><br>广告变现激励</td>
+        <td>
+          <strong>IAA广告类小游戏激励方案</strong><br>
+          <span class="sep">·</span> 主要收入为广告展示 <span class="sep">·</span> 含混合变现游戏<br>
+          <span class="sep">·</span> 2026年2月起新版方案
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">注册激励</span>
+            通过买量注册+活跃>5分钟：<br>
+            <span class="tier">轻中度</span> 1-30天广告流水 <span class="num">40%</span>　<span class="sep">|</span>　<span class="tier">长线</span> 1-90天广告流水 <span class="num">35%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-bonus">回流激励</span>
+            >45天流失用户回流+活跃>5分钟，视同注册用户享受同等激励
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-split">混合变现</span>
+            内购流水占比≥30% <span class="sep">·</span> 注册激励 1-30天广告流水 <span class="num">40%</span> <span class="sep">·</span> 回流激励 1-30天 <span class="num">40%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-pay">加热/CPS</span>
+            视频号加热+CPS小任务+CPS直播推游戏 <span class="sep">·</span> 1-30天 <span class="num">40%</span> + 31-90天 <span class="num">10%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">创意游戏</span>
+            单日广告流水≤200万：现金分成 <span class="num">70%</span> <span class="sep">·</span> >200万部分：<span class="num">50%</span><br>
+            买注册广告金 ≤200万配赠 <span class="num">20%</span> <span class="sep">·</span> >200万配赠 <span class="num">10%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            买量场景含腾讯广告+外部应用（排除CPS）<span class="sep">·</span> 混合变现仅限腾讯广告 <span class="sep">·</span> 创意游戏需有"创意"标识
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">结算</span>
+            现金 半月结（约13天到账）<span class="sep">·</span> 广告金 T+2日结 <span class="sep">·</span> 广告金有效期 365天
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developers.weixin.qq.com/minigame/introduction/commercialization/guide/ad-monetization.html" target="_blank">→</a></td>
+      </tr>
+      <!-- 视频号 -->
+      <tr class="row-video" id="wx-video">
+        <td><span class="tag tag-video">视频号</span><br>视频号激励政策</td>
+        <td>
+          <strong>视频号渠道专项激励</strong><br>
+          <span class="sep">·</span> 通过视频号加热/短视频CPS/直播CPS触达用户<br>
+          <span class="sep">·</span> IAA + IAP 均适用
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-bonus">IAA</span>
+            视频号渠道注册用户（活跃>5分钟）按 IAA 激励政策执行<br>
+            <span class="tier">加热+CPS</span> 1-30天广告流水 <span class="num">40%</span> + 31-90天 <span class="num">10%</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-split">IAP</span>
+            短视频CPS+直播CPS渠道内购流水 → <span class="num">10%</span> 视频号加热金
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            不含视频号广告（信息流广告）<span class="sep">·</span> 加热金不可划账/退款
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">发放</span>
+            每月发放一次（月初）<span class="sep">·</span> 使用时效 365天
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developers.weixin.qq.com/minigame/introduction/commercialization/guide/channels-operational.html" target="_blank">→</a></td>
+      </tr>
+      <!-- PC -->
+      <tr class="row-pc" id="wx-pc">
+        <td><span class="tag tag-pc">PC</span><br>PC激励政策</td>
+        <td>
+          <strong>PC场景独立激励</strong><br>
+          <span class="sep">·</span> 针对 IAP 小游戏 PC 端流水<br>
+          <span class="sep">·</span> 与原有激励可叠加
+        </td>
+        <td>
+          <div class="inc-item">
+            <span class="sub-label sl-rebate">激励</span>
+            PC内购净流水 <span class="hl-box">10% PC广告金</span>
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-cond">条件</span>
+            合规评级 A 及以上 <span class="sep">·</span> 2026 H1 活动期（1月-6月）
+          </div>
+          <div class="inc-item">
+            <span class="sub-label sl-send">发放</span>
+            按月发放 <span class="sep">·</span> 消1赠1每天发放 <span class="sep">·</span> 有效期 90天 <span class="sep">·</span> 支持同主体/关联主体
+          </div>
+        </td>
+        <td class="link-col"><a href="https://developers.weixin.qq.com/minigame/introduction/commercialization/guide/pc-operational.html" target="_blank">→</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</main>
+
+<script>
+(function() {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const views = {
+    huawei: document.getElementById('view-huawei'),
+    wechat: document.getElementById('view-wechat')
+  };
+  const subs = {
+    huawei: document.querySelector('.tab-sub[data-parent="huawei"]'),
+    wechat: document.querySelector('.tab-sub[data-parent="wechat"]')
+  };
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tab = this.dataset.tab;
+      tabs.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      Object.keys(views).forEach(key => {
+        views[key].classList.toggle('active', key === tab);
+      });
+      Object.keys(subs).forEach(key => {
+        subs[key].classList.toggle('visible', key === tab);
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
