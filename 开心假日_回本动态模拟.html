@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开心假日 · 回本动态模拟</title>
+<style>
+:root{
+  --bg:#0b0d12;--p1:#12151d;--p2:#181c26;--line:#252b38;
+  --txt:#e8edf5;--txt2:#94a1b8;--txt3:#5c6678;
+  --go:#34d399;--warn:#fbbf24;--stop:#f87171;--acc:#60a5fa;--violet:#a78bfa;
+  --mono:'SF Mono',ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.65;padding:30px 18px;
+  background-image:radial-gradient(circle at 15% -10%,rgba(96,165,250,.07),transparent 45%),radial-gradient(circle at 90% 110%,rgba(248,113,113,.05),transparent 45%)}
+.wrap{max-width:1060px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.2em;color:var(--acc);text-transform:uppercase;margin-bottom:7px}
+h1{font-size:1.9rem;font-weight:680;letter-spacing:-.02em;margin-bottom:5px}
+.sub{color:var(--txt2);font-size:.9rem;margin-bottom:24px}
+.sub code{font-family:var(--mono);background:var(--p2);padding:1px 6px;border-radius:4px;color:var(--txt)}
+
+.banner{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(110deg,rgba(248,113,113,.1),rgba(251,191,36,.06));border:1px solid rgba(248,113,113,.25);border-radius:14px;padding:16px 20px;margin-bottom:24px}
+.banner-icon{font-family:var(--mono);font-size:1.3rem;color:var(--stop);font-weight:700;flex-shrink:0;line-height:1.3}
+.banner-txt{font-size:.9rem;color:var(--txt)}
+.banner-txt b{color:var(--stop)}
+
+.console{background:linear-gradient(165deg,var(--p1),var(--p2));border:1px solid var(--line);border-radius:18px;padding:26px 30px;margin-bottom:22px;position:relative;overflow:hidden}
+.console::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.5}
+.clabel{font-family:var(--mono);font-size:.72rem;letter-spacing:.13em;color:var(--txt2);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.clabel::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.srow{display:flex;align-items:baseline;gap:16px}
+.bigval{font-family:var(--mono);font-size:3.2rem;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.bigval .u{font-size:1.5rem;color:var(--txt2)}
+.stag{color:var(--txt2);font-size:.88rem;max-width:420px}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;margin:18px 0 7px;background:linear-gradient(90deg,var(--go),var(--warn) 55%,var(--stop));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--bg);box-shadow:0 2px 12px rgba(0,0,0,.6);cursor:grab}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--bg);cursor:grab}
+.ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;color:var(--txt3)}
+.presets{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.pst{font-family:var(--mono);font-size:.78rem;padding:6px 13px;border-radius:8px;background:var(--p2);border:1px solid var(--line);color:var(--txt2);cursor:pointer;transition:.15s}
+.pst:hover{border-color:var(--acc);color:var(--txt)}
+.pst.on{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:600}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:22px}
+@media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+.panel{background:var(--p1);border:1px solid var(--line);border-radius:15px;padding:22px 24px}
+.panel h2{font-size:1rem;font-weight:620;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.panel h2 .n{font-family:var(--mono);font-size:.74rem;color:var(--acc);background:rgba(96,165,250,.12);padding:2px 7px;border-radius:5px}
+.panel .d{color:var(--txt3);font-size:.8rem;margin-bottom:16px}
+
+.verdict{padding:15px 18px;border-radius:11px;border:1px solid;display:flex;gap:13px;align-items:center;transition:.2s}
+.verdict.go{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3)}
+.verdict.warn{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3)}
+.verdict.stop{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.3)}
+.vi{font-family:var(--mono);font-size:1.5rem;font-weight:700}
+.verdict.go .vi{color:var(--go)}.verdict.warn .vi{color:var(--warn)}.verdict.stop .vi{color:var(--stop)}
+.vt{font-size:.88rem}.vt b{font-family:var(--mono)}
+
+.distbox{position:relative;height:130px;margin:10px 0 6px}
+.distbox canvas{width:100%;height:100%}
+.distlegend{display:flex;gap:16px;font-size:.76rem;color:var(--txt2);margin-top:4px;flex-wrap:wrap}
+.dl{display:flex;align-items:center;gap:5px}
+.dl .sw{width:11px;height:3px;border-radius:2px}
+
+.crit{text-align:center;padding:6px 0}
+.cv{font-family:var(--mono);font-size:2.5rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.cl{color:var(--txt2);font-size:.82rem;margin-top:7px}
+.cn{color:var(--txt3);font-size:.76rem;margin-top:8px;font-style:italic}
+
+.thresh{display:flex;flex-direction:column;gap:12px}
+.trow{display:flex;align-items:center;gap:12px}
+.tlab{font-family:var(--mono);font-size:.8rem;color:var(--txt2);width:58px;flex-shrink:0}
+.bar{flex:1;height:34px;border-radius:8px;background:var(--p2);overflow:hidden;display:flex}
+.seg{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.72rem;font-weight:600}
+.seg.go{background:rgba(52,211,153,.16);color:var(--go)}
+.seg.warn{background:rgba(251,191,36,.14);color:var(--warn)}
+.seg.stop{background:rgba(248,113,113,.14);color:var(--stop)}
+
+.trend-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(37,43,56,.6);font-size:.86rem}
+.trend-row:last-child{border:none}
+.trend-name{color:var(--txt2)}
+.trend-val{font-family:var(--mono);display:flex;gap:10px;align-items:center}
+.tflag{font-size:.72rem;padding:1px 8px;border-radius:10px;font-weight:600}
+.tflag.trend{background:rgba(248,113,113,.15);color:var(--stop)}
+.tflag.rand{background:rgba(52,211,153,.15);color:var(--go)}
+
+.trendchart{height:140px;margin-top:8px}
+.trendchart canvas{width:100%;height:100%}
+
+.foot{text-align:center;color:var(--txt3);font-size:.76rem;font-family:var(--mono);margin-top:26px;letter-spacing:.03em}
+.note{background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:10px;padding:13px 17px;margin-top:14px;font-size:.82rem;color:var(--txt2)}
+.note b{color:var(--txt)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">开心假日 · Payback Simulator</div>
+  <h1>回本动态模拟</h1>
+  <div class="sub">规模化买量期 <code>2022-06 ~ 2024-02</code> · 21 个月 / 638 买量天 · 三步法诊断</div>
+
+  <div class="banner">
+    <div class="banner-icon">⚠</div>
+    <div class="banner-txt"><b>这款产品未通过稳定性闸门。</b>趋势检验显示 ARPPU（−18.7%）和留存衰减比（−33.5%）在买量期内持续下滑，变现底盘处于结构性衰退。下方所有"均值"指标都被早期高位拉高，<b>真正反映现状的是 P10 下界</b>。请带着这个前提看模拟结果。</div>
+  </div>
+
+  <div class="console">
+    <div class="clabel">回本线设定 · D360 ROI Target</div>
+    <div class="srow">
+      <div class="bigval" id="pb">150<span class="u">%</span></div>
+      <div class="stag">广告收入相对消耗的回收倍数。拖动观察各指标如何变化。</div>
+    </div>
+    <input type="range" id="sld" min="80" max="250" value="150" step="5">
+    <div class="ticks"><span>80%</span><span>120%</span><span>160%</span><span>200%</span><span>250%</span></div>
+    <div class="presets">
+      <button class="pst" data-v="100">100% 持平</button>
+      <button class="pst" data-v="120">120% 含分成</button>
+      <button class="pst on" data-v="150">150% 综合回本</button>
+      <button class="pst" data-v="180">180% 含利润</button>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:22px">
+    <h2><span class="n">A</span>分布校验 · 均值 vs 下界</h2>
+    <div class="d">月度 D360 ROI 的真实分布（21个月）。回本线（白虚线）扫过分布，落在多少月份之下即为跌破。</div>
+    <div class="distbox"><canvas id="dist"></canvas></div>
+    <div class="distlegend">
+      <div class="dl"><span class="sw" style="background:var(--violet)"></span>各月 D360 ROI</div>
+      <div class="dl"><span class="sw" style="background:var(--txt2)"></span>均值 145%</div>
+      <div class="dl"><span class="sw" style="background:var(--stop)"></span>P10 下界 70%</div>
+      <div class="dl"><span class="sw" style="background:#fff"></span>当前回本线</div>
+    </div>
+    <div class="verdict" id="distverdict" style="margin-top:14px"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2><span class="n">B</span>D1 留存临界点</h2>
+      <div class="d">达到回本线所需的最低首日留存</div>
+      <div class="crit">
+        <div class="cv" id="critv">—</div>
+        <div class="cl">D1 留存达此值，预期 D360 ROI 触及回本线</div>
+        <div class="cn" id="critn"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2><span class="n">C</span>稳定段实况</h2>
+      <div class="d">衰退到底后的最近 5 个月（2023-10~2024-02）</div>
+      <div class="crit">
+        <div class="cv" id="segv" style="color:var(--stop)">—</div>
+        <div class="cl">该段 D360 ROI 中位（已衰退企稳的真实水平）</div>
+        <div class="cn" id="segn"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom:22px">
+    <h2><span class="n">D</span>ROI 里程碑决策阈值</h2>
+    <div class="d">日级放大系数 P25 倒推 · 随回本线移动 · 早投早停的判断线</div>
+    <div class="thresh" id="thresh"></div>
+    <div class="note"><b>读法：</b>绿=保守估计也能回本可继续；黄=灰区观察到下一里程碑；红=乐观估计都回不了本建议停。<b>注意：</b>本产品衰退中，早期 ROI 达标也需警惕后续衰减，阈值宜从严。</div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2><span class="n">E</span>趋势检验结果</h2>
+      <div class="d">线性回归斜率显著性 · 闸门判据</div>
+      <div id="trends"></div>
+    </div>
+    <div class="panel">
+      <h2><span class="n">F</span>衰退轨迹</h2>
+      <div class="d">留存衰减比月度走势 · 肉眼可见的下行</div>
+      <div class="trendchart"><canvas id="tchart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="foot">三步法诊断 · 数据动态计算 · 禁止套用其他产品</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const D=JSON.parse('{"metrics": {"period": "2022-06 ~ 2024-02", "months": 21, "days": 638, "d360_roi_mean": 1.6127, "cpa": 3.26}, "trends": {"ARPPU": {"drift": -18.7, "p": 0.008, "cv": 0.098, "trend": true, "mean": 21.3462}, "付费率": {"drift": -27.9, "p": 0.052, "cv": 0.192, "trend": false, "mean": 0.0276}, "衰减比": {"drift": -33.5, "p": 0.0, "cv": 0.126, "trend": true, "mean": 0.4244}}, "roi_dist": {"mean": 1.4528, "p10": 0.6959, "median": 1.1725, "p90": 2.389, "min": 0.5824, "max": 3.0102}, "monthly_roi": [2.389, 3.0102, 2.295, 2.1509, 2.4908, 2.2862, 1.9657, 1.7488, 1.5379, 1.3807, 1.1725, 1.1349, 1.0079, 0.9192, 0.8327, 0.7365, 0.6813, 0.7756, 0.5824, 0.715, 0.6959], "monthly_roi_labels": ["2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02"], "amp": {"d7_d360": {"p25": 6.332, "p50": 7.241, "p75": 8.197}, "d30_d360": {"p25": 2.713, "p50": 2.996, "p75": 3.326}, "d7_d180": {"p25": 5.091, "p50": 5.762, "p75": 6.513}, "d30_d180": {"p25": 2.161, "p50": 2.402, "p75": 2.621}}, "d1map": [[0.0495, 0.6754], [0.0573, 0.6592], [0.0655, 0.7364], [0.0747, 0.8009], [0.085, 1.0581], [0.0942, 1.1276], [0.1054, 1.2976], [0.1143, 1.4371], [0.1245, 1.7464], [0.1349, 1.955], [0.1448, 2.2777], [0.1543, 2.2723], [0.1648, 2.5791], [0.1753, 2.5046], [0.1991, 2.1859], [0.2059, 2.1755], [0.2146, 2.2999], [0.2252, 2.7065], [0.2352, 2.5343], [0.2451, 2.6748], [0.2551, 3.0416], [0.265, 2.8789], [0.2751, 2.3075], [0.285, 2.3351], [0.3033, 2.5601]], "arppu_series": [23.04, 24.39, 18.45, 19.31, 23.79, 24.49, 23.22, 23.56, 21.68, 21.79, 21.86, 21.53, 21.65, 21.09, 23.19, 19.83, 20.83, 18.0, 18.15, 19.98, 18.44], "decay_series": [0.4951, 0.4936, 0.4884, 0.4522, 0.4574, 0.4406, 0.4151, 0.3854, 0.4543, 0.4887, 0.4598, 0.4559, 0.4296, 0.4047, 0.3423, 0.4023, 0.3969, 0.4106, 0.3909, 0.3605, 0.287], "all_labels": ["2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02"], "stable_seg": {"start": "2023-10", "end": "2024-02", "months": 5, "roi_median": 0.6959, "roi_p10": 0.6219}}');
+const dark=true;
+const grid='rgba(255,255,255,.06)';
+Chart.defaults.font.family='var(--mono)';Chart.defaults.font.size=10;Chart.defaults.color='#5c6678';
+
+function interpD1(t){const m=D.d1map;for(let i=0;i<m.length-1;i++){const[a,ra]=m[i],[b,rb]=m[i+1];if((ra<=t&&rb>=t)||(ra>=t&&rb<=t)){if(rb===ra)return a;return a+(t-ra)/(rb-ra)*(b-a);}}return null;}
+
+let distChart,tChart,pbLineVal=1.5;
+const pbLinePlugin={id:'pbline',afterDraw(ch){
+  const ya=ch.scales.y;if(!ya)return;const y=ya.getPixelForValue(pbLineVal*100);
+  const ctx=ch.ctx;ctx.save();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(ch.chartArea.left,y);ctx.lineTo(ch.chartArea.right,y);ctx.stroke();
+  ctx.setLineDash([]);ctx.fillStyle='#fff';ctx.font='600 10px monospace';ctx.textAlign='right';
+  ctx.fillText((pbLineVal*100).toFixed(0)+'%',ch.chartArea.right-4,y-5);ctx.restore();
+}};
+function initCharts(){
+  const vals=[...D.monthly_roi].sort((a,b)=>a-b);
+  distChart=new Chart(document.getElementById('dist'),{
+    type:'bar',
+    data:{labels:vals.map((_,i)=>i+1),datasets:[{data:vals.map(v=>v*100),backgroundColor:vals.map(v=>'rgba(167,139,250,.55)'),borderRadius:2,barPercentage:.9}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toFixed(0)+'%'}}},
+      scales:{x:{display:false},y:{grid:{color:grid},ticks:{callback:v=>v+'%'},max:320}},
+      animation:false},
+    plugins:[pbLinePlugin]
+  });
+  // trend: decay ratio over months
+  tChart=new Chart(document.getElementById('tchart'),{
+    type:'line',
+    data:{labels:D.all_labels,datasets:[{data:D.decay_series.map(v=>v*100),borderColor:'#f87171',backgroundColor:'rgba(248,113,113,.08)',borderWidth:2,pointRadius:0,tension:.3,fill:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{maxTicksLimit:6,font:{size:9}},grid:{display:false}},y:{grid:{color:grid},ticks:{callback:v=>v+'%'}}},animation:false}
+  });
+}
+
+function render(pb){
+  const pbF=pb/100;
+  document.getElementById('pb').innerHTML=pb+'<span class="u">%</span>';
+
+  // A: distribution verdict
+  const breach=D.monthly_roi.filter(v=>v<pbF).length;
+  const breachPct=Math.round(breach/D.monthly_roi.length*100);
+  const p10=D.roi_dist.p10;
+  const dv=document.getElementById('distverdict');
+  if(pbF<=p10){
+    dv.className='verdict go';
+    dv.innerHTML='<div class="vi">✓</div><div class="vt">回本线 <b>'+pb+'%</b> 低于 P10 下界（70%），即使最差月份也回本。历史跌破 <b>'+breachPct+'%</b> 月份。</div>';
+  }else if(pbF<=D.roi_dist.median){
+    dv.className='verdict warn';
+    dv.innerHTML='<div class="vt"><div class="vi" style="display:inline">!</div> 回本线 <b>'+pb+'%</b> 在 P10 与中位之间，历史 <b>'+breachPct+'%</b> 月份跌破。下界（70%）已击穿，靠少数高月份撑住均值。</div>';
+  }else{
+    dv.className='verdict stop';
+    dv.innerHTML='<div class="vi">✕</div><div class="vt">回本线 <b>'+pb+'%</b> 高于中位（117%），历史 <b>'+breachPct+'%</b> 月份跌破。多数月份不回本，仅靠个别峰值月份。</div>';
+  }
+  const vals=[...D.monthly_roi].sort((a,b)=>a-b);
+  distChart.data.datasets[0].backgroundColor=vals.map(v=>v<pbF?'rgba(248,113,113,.6)':'rgba(167,139,250,.55)');
+  pbLineVal=pbF;
+  distChart.update('none');
+
+  // B: D1 critical
+  const crit=interpD1(pbF);
+  const cv=document.getElementById('critv'),cn=document.getElementById('critn');
+  if(crit===null){cv.textContent='—';cv.style.color='var(--txt3)';cn.textContent='当前回本线超出历史D1档位范围';}
+  else{cv.textContent='≥ '+(crit*100).toFixed(1)+'%';cv.style.color=crit>0.13?'var(--stop)':crit>0.10?'var(--warn)':'var(--go)';cn.textContent='低于此值的批次几乎都未在D360触及'+pb+'%';}
+
+  // C: stable segment (static but recolor vs payback)
+  const segv=document.getElementById('segv'),segn=document.getElementById('segn');
+  const sm=D.stable_seg.roi_median;
+  segv.textContent=(sm*100).toFixed(0)+'%';
+  segv.style.color=sm>=pbF?'var(--go)':'var(--stop)';
+  segn.innerHTML='P10 '+(D.stable_seg.roi_p10*100).toFixed(0)+'% · '+(sm>=pbF?'达到':'<b style="color:var(--stop)">未达</b>')+'当前回本线'+(sm<pbF?' — 最近段实际不回本':'');
+
+  // D: thresholds
+  const a7=D.amp.d7_d360,a30=D.amp.d30_d360;
+  let th='';
+  [['D7',a7],['D30',a30]].forEach(([l,a])=>{
+    const go=pbF/a.p25*100,stop=pbF/a.p75*100;
+    th+='<div class="trow"><div class="tlab">'+l+' ROI</div><div class="bar">'+
+      '<div class="seg stop" style="width:25%">&lt;'+stop.toFixed(1)+'%</div>'+
+      '<div class="seg warn" style="width:30%">'+stop.toFixed(1)+'~'+go.toFixed(1)+'%</div>'+
+      '<div class="seg go" style="width:45%">&ge;'+go.toFixed(1)+'%</div></div></div>';
+  });
+  document.getElementById('thresh').innerHTML=th;
+}
+
+// trends panel (static)
+function renderTrends(){
+  let h='';
+  for(const[name,t] of Object.entries(D.trends)){
+    h+='<div class="trend-row"><div class="trend-name">'+name+'</div><div class="trend-val">'+
+      '<span style="color:var(--txt3)">漂移</span> '+(t.drift>0?'+':'')+t.drift+'% '+
+      '<span style="color:var(--txt3)">p=</span>'+t.p+
+      '<span class="tflag '+(t.trend?'trend':'rand')+'">'+(t.trend?'趋势性':'随机')+'</span></div></div>';
+  }
+  document.getElementById('trends').innerHTML=h;
+}
+
+const sld=document.getElementById('sld');
+sld.addEventListener('input',e=>{const v=+e.target.value;render(v);document.querySelectorAll('.pst').forEach(p=>p.classList.toggle('on',+p.dataset.v===v));});
+document.querySelectorAll('.pst').forEach(p=>p.addEventListener('click',()=>{sld.value=p.dataset.v;render(+p.dataset.v);document.querySelectorAll('.pst').forEach(x=>x.classList.remove('on'));p.classList.add('on');}));
+
+initCharts();renderTrends();render(150);
+</script>
+</body>
+</html>
