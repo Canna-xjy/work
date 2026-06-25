@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAP 回本线模拟器 — 假日</title>
+<style>
+:root{
+  --ink:#0a0e14; --panel:#10151f; --panel2:#161d2b; --line:#1f2a3d;
+  --txt:#e6edf6; --txt2:#8b9bb4; --txt3:#5a6b85;
+  --go:#3ddc97; --warn:#ffc857; --stop:#ff6b6b; --accent:#4d9fff;
+  --mono:'SF Mono',ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--txt);font-family:var(--sans);line-height:1.6;
+  background-image:radial-gradient(circle at 20% 0%,rgba(77,159,255,.06),transparent 40%),radial-gradient(circle at 80% 100%,rgba(61,220,151,.04),transparent 40%);
+  min-height:100vh;padding:32px 20px}
+.wrap{max-width:1080px;margin:0 auto}
+.head{margin-bottom:28px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+h1{font-size:2rem;font-weight:680;letter-spacing:-.02em;margin-bottom:6px}
+.sub{color:var(--txt2);font-size:.92rem}
+.sub code{font-family:var(--mono);color:var(--txt);background:var(--panel2);padding:1px 7px;border-radius:5px;font-size:.85rem}
+
+.console{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden}
+.console::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5}
+.console-label{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;color:var(--txt2);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.console-label::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--go);box-shadow:0 0 10px var(--go)}
+
+.slider-row{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+.bigval{font-family:var(--mono);font-size:3.4rem;font-weight:700;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.bigval .pct{font-size:1.6rem;color:var(--txt2);margin-left:2px}
+.slider-tag{color:var(--txt2);font-size:.9rem}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;margin:20px 0 8px;
+  background:linear-gradient(90deg,var(--go) 0%,var(--warn) 50%,var(--stop) 100%);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink);box-shadow:0 2px 12px rgba(0,0,0,.5);cursor:grab}
+input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.1)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink);cursor:grab}
+.ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.72rem;color:var(--txt3)}
+.preset-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.preset{font-family:var(--mono);font-size:.8rem;padding:6px 14px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);color:var(--txt2);cursor:pointer;transition:all .15s}
+.preset:hover{border-color:var(--accent);color:var(--txt)}
+.preset.active{background:var(--accent);border-color:var(--accent);color:var(--ink);font-weight:600}
+
+.verdict{margin-top:22px;padding:18px 22px;border-radius:12px;border:1px solid;display:flex;align-items:center;gap:16px;transition:all .2s}
+.verdict.stable{background:rgba(61,220,151,.08);border-color:rgba(61,220,151,.3)}
+.verdict.unstable{background:rgba(255,200,87,.08);border-color:rgba(255,200,87,.3)}
+.verdict-icon{font-family:var(--mono);font-size:1.6rem;font-weight:700}
+.verdict.stable .verdict-icon{color:var(--go)}
+.verdict.unstable .verdict-icon{color:var(--warn)}
+.verdict-txt{font-size:.92rem}
+.verdict-txt b{font-family:var(--mono)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 26px}
+.panel h2{font-size:1.05rem;font-weight:620;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+.panel h2 .n{font-family:var(--mono);font-size:.78rem;color:var(--accent);background:rgba(77,159,255,.1);padding:2px 8px;border-radius:6px}
+.panel .desc{color:var(--txt3);font-size:.82rem;margin-bottom:18px}
+
+.thresh{display:flex;flex-direction:column;gap:14px}
+.thresh-row{display:flex;align-items:center;gap:14px}
+.thresh-label{font-family:var(--mono);font-size:.82rem;color:var(--txt2);width:62px;flex-shrink:0}
+.bar{flex:1;height:38px;border-radius:9px;background:var(--panel2);position:relative;overflow:hidden;display:flex;align-items:center}
+.seg{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.74rem;font-weight:600}
+.seg.go{background:rgba(61,220,151,.16);color:var(--go)}
+.seg.warn{background:rgba(255,200,87,.14);color:var(--warn)}
+.seg.stop{background:rgba(255,107,107,.14);color:var(--stop)}
+
+.crit{text-align:center;padding:10px 0}
+.crit-val{font-family:var(--mono);font-size:2.8rem;font-weight:700;color:var(--go);line-height:1;font-variant-numeric:tabular-nums}
+.crit-val.hard{color:var(--stop)}
+.crit-label{color:var(--txt2);font-size:.85rem;margin-top:8px}
+.crit-note{color:var(--txt3);font-size:.78rem;margin-top:10px;font-style:italic}
+
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:4px}
+th{text-align:left;font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;color:var(--txt3);text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid rgba(31,42,61,.5);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+.mono{font-family:var(--mono)}
+.dim{color:var(--txt3)}
+.pill{display:inline-block;padding:1px 9px;border-radius:11px;font-size:.74rem;font-weight:600;font-family:var(--mono)}
+.pill.go{background:rgba(61,220,151,.15);color:var(--go)}
+.pill.warn{background:rgba(255,200,87,.15);color:var(--warn)}
+.pill.stop{background:rgba(255,107,107,.15);color:var(--stop)}
+
+.wide{grid-column:1/-1}
+.matrix{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px;margin-top:8px}
+.mcell{padding:12px 10px;border-radius:9px;text-align:center;font-family:var(--mono)}
+.mcell.hdr{background:transparent;color:var(--txt3);font-size:.74rem;display:flex;align-items:center;justify-content:center;letter-spacing:.04em}
+.mcell.rhdr{background:var(--panel2);color:var(--txt2);font-size:.82rem;font-weight:600}
+.mcell.data{background:var(--panel2);font-size:1.05rem;font-weight:600}
+.mcell.data .unit{font-size:.72rem;color:var(--txt3)}
+.mcell .sub2{font-size:.68rem;color:var(--txt3);margin-top:3px}
+
+.note-box{background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.2);border-radius:11px;padding:15px 19px;margin-top:18px;font-size:.84rem;color:var(--txt2)}
+.note-box b{color:var(--txt)}
+.foot{text-align:center;color:var(--txt3);font-size:.78rem;font-family:var(--mono);margin-top:30px;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="eyebrow">IAP · Payback Simulator</div>
+    <h1>回本线模拟器</h1>
+    <div class="sub">拖动回本线，所有关键指标实时重算 · 数据源 <code>假日.xlsx</code> · 752 有效天 / 26 个月</div>
+  </div>
+
+  <div class="console">
+    <div class="console-label">回本线设定 · D360 ROI Target</div>
+    <div class="slider-row">
+      <div class="bigval" id="pbval">150<span class="pct">%</span></div>
+      <div class="slider-tag">广告收入相对消耗的回收倍数。100% = 持平，150% = 覆盖平台分成与间接成本后回本</div>
+    </div>
+    <input type="range" id="slider" min="80" max="250" value="150" step="5">
+    <div class="ticks"><span>80%</span><span>120%</span><span>160%</span><span>200%</span><span>250%</span></div>
+    <div class="preset-row">
+      <button class="preset" data-v="100">100% 持平</button>
+      <button class="preset" data-v="120">120% 含分成</button>
+      <button class="preset active" data-v="150">150% 综合回本</button>
+      <button class="preset" data-v="180">180% 含目标利润</button>
+    </div>
+    <div class="verdict" id="verdict">
+      <div class="verdict-icon" id="vicon">✓</div>
+      <div class="verdict-txt" id="vtxt"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2><span class="n">A</span>稳定性诊断</h2>
+      <div class="desc">合并 CV 与决策余量比较 · 余量随回本线变化</div>
+      <table>
+        <tr><td class="dim">合并 CV（变现波动）</td><td class="mono" style="text-align:right">0.240</td></tr>
+        <tr><td class="dim">D360 ROI 均值</td><td class="mono" style="text-align:right">161.1%</td></tr>
+        <tr><td class="dim">决策余量 <span class="dim">=(均值−回本线)/均值</span></td><td class="mono" id="margin" style="text-align:right">—</td></tr>
+        <tr><td class="dim">判定</td><td style="text-align:right" id="stab-pill">—</td></tr>
+      </table>
+      <div class="note-box" id="stab-note"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="n">B</span>D1 留存临界点</h2>
+      <div class="desc">达到回本线所需的最低首日留存</div>
+      <div class="crit">
+        <div class="crit-val" id="crit-val">—</div>
+        <div class="crit-label">D1 留存达此值，预期 D360 ROI 触及回本线</div>
+        <div class="crit-note" id="crit-note"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel wide" style="margin-bottom:24px">
+    <h2><span class="n">C</span>ROI 里程碑决策阈值</h2>
+    <div class="desc">用日级数据的放大系数分位数倒推 · P25 保守 / P75 乐观 · 早投早停的判断线</div>
+    <div class="thresh" id="thresh"></div>
+    <div class="note-box">
+      <b>读法：</b>绿色 = 达到此 ROI 可继续投放（即使保守估计也能回本）；黄色 = 灰色地带，继续观察到下一里程碑；红色 = 即使乐观估计也回不了本，建议停投。阈值随回本线同步移动。
+    </div>
+  </div>
+
+  <div class="panel wide" style="margin-bottom:24px">
+    <h2><span class="n">D</span>CPA 的真相 · LTV vs ROI</h2>
+    <div class="desc">修正报告结论：同 D1 留存桶内，看 LTV（用户真实价值）而非 ROI（被 CPA 分母扭曲）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" id="cpa-section">
+      <div>
+        <div style="font-family:var(--mono);font-size:.78rem;color:var(--txt2);margin-bottom:10px">D360 LTV（每用户终身价值 $）</div>
+        <div class="matrix" id="ltv-mat"></div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:.78rem;color:var(--txt2);margin-bottom:10px">D360 ROI（报告所用口径 %）</div>
+        <div class="matrix" id="roi-mat"></div>
+      </div>
+    </div>
+    <div class="note-box">
+      <b>关键修正：</b>在每个 D1 留存桶内，CPA 越高 LTV 越高（贵的用户质量更好），但 ROI 几乎不变——多花的钱被多赚的钱抵消。报告里"低 CPA = 甜区"是 ROI 分母效应造成的假象。<b>结论：CPA 决定成本不决定质量，不应作为独立评级维度。</b>评级只看 D1 留存，CPA 单独作为成本约束监控。
+    </div>
+  </div>
+
+  <div class="foot">阈值随数据动态计算 · 禁止套用其他产品 · 建议每 6 个月刷新</div>
+</div>
+
+<script>
+const D='{"metrics": {"d7_roi": 0.2272, "d30_roi": 0.5472, "d360_roi": 1.6115, "arppu": 21.71, "pay_rate": 0.0272, "cpa": 3.23, "combined_cv": 0.24, "cv_arppu": 0.092, "cv_payrate": 0.183, "cv_decay": 0.126, "days": 752, "months": 26, "front_load": 0.136}, "amp": {"all": {"d7_d360": {"p25": 6.236, "p50": 7.271, "p75": 8.396}, "d30_d360": {"p25": 2.69, "p50": 3.024, "p75": 3.39}, "d7_d180": {"p25": 4.948, "p50": 5.762, "p75": 6.61}, "d7_d30": {"p25": 2.219, "p50": 2.389, "p75": 2.58}, "d30_d180": {"p25": 2.142, "p50": 2.402, "p75": 2.645}}, "low": {"d7_d360": {"p25": 6.093, "p50": 7.679, "p75": 9.857}, "d30_d360": {"p25": 2.668, "p50": 3.158, "p75": 3.85}, "d7_d180": {"p25": 4.833, "p50": 6.0, "p75": 7.471}, "d7_d30": {"p25": 2.073, "p50": 2.327, "p75": 2.672}, "d30_d180": {"p25": 2.13, "p50": 2.473, "p75": 2.906}}, "high": {"d7_d360": {"p25": 6.275, "p50": 7.134, "p75": 7.967}, "d30_d360": {"p25": 2.694, "p50": 2.975, "p75": 3.24}, "d7_d180": {"p25": 5.05, "p50": 5.689, "p75": 6.381}, "d7_d30": {"p25": 2.262, "p50": 2.405, "p75": 2.543}, "d30_d180": {"p25": 2.146, "p50": 2.379, "p75": 2.566}}}, "d1_map": [[0.0371, 0.4075, 5], [0.0467, 0.8642, 14], [0.0566, 0.6834, 46], [0.0654, 0.7347, 108], [0.0746, 0.8009, 121], [0.085, 1.0561, 55], [0.0944, 1.1247, 44], [0.1055, 1.2981, 55], [0.1144, 1.4383, 45], [0.1247, 1.7464, 35], [0.1348, 1.9555, 34], [0.145, 2.2792, 26], [0.1543, 2.2723, 25], [0.165, 2.584, 17], [0.1753, 2.5046, 7], [0.1991, 2.1859, 5], [0.2059, 2.1755, 13], [0.2146, 2.3009, 23], [0.2252, 2.7065, 17], [0.2352, 2.5343, 7], [0.2451, 2.6748, 6], [0.2551, 3.0416, 8], [0.265, 2.8789, 10], [0.2751, 2.3075, 4], [0.2855, 2.347, 8], [0.3033, 2.5601, 4]], "buckets": [{"name": "Q1", "d1_min": 0.3, "d1_max": 6.8, "d1_avg": 5.8, "roi": 74.5, "arppu": 19.87, "pay_rate": 2.6, "days": 151}, {"name": "Q2", "d1_min": 6.8, "d1_max": 8.0, "d1_avg": 7.4, "roi": 79.5, "arppu": 20.97, "pay_rate": 2.4, "days": 150}, {"name": "Q3", "d1_min": 8.0, "d1_max": 11.0, "d1_avg": 9.5, "roi": 118.7, "arppu": 21.93, "pay_rate": 2.34, "days": 150}, {"name": "Q4", "d1_min": 11.0, "d1_max": 15.3, "d1_avg": 12.9, "roi": 181.1, "arppu": 22.68, "pay_rate": 2.8, "days": 150}, {"name": "Q5", "d1_min": 15.3, "d1_max": 49.3, "d1_avg": 22.2, "roi": 247.2, "arppu": 21.46, "pay_rate": 3.47, "days": 151}], "ltv_matrix": {"低": {"低": 1.55, "中": 2.26, "高": 3.0}, "中": {"低": 3.36, "中": 3.64, "高": 4.61}, "高": {"低": 4.73, "中": 6.7, "高": 9.31}}, "roi_matrix": {"低": {"低": 76.0, "中": 75.0, "高": 78.0}, "中": {"低": 150.0, "中": 118.0, "高": 115.0}, "高": {"低": 202.0, "中": 219.0, "高": 223.0}}}';
+const data=JSON.parse(D);
+const M=data.metrics;
+
+function interpD1(targetRoi){
+  // d1_map: [[d1,roi,days],...] sorted by d1
+  const m=data.d1_map;
+  for(let i=0;i<m.length-1;i++){
+    const [d1a,ra]=m[i],[d1b,rb]=m[i+1];
+    if((ra<=targetRoi&&rb>=targetRoi)||(ra>=targetRoi&&rb<=targetRoi)){
+      if(rb===ra)return d1a;
+      const f=(targetRoi-ra)/(rb-ra);
+      return d1a+f*(d1b-d1a);
+    }
+  }
+  return null;
+}
+
+function render(pb){ // pb in percent
+  const pbF=pb/100;
+  document.getElementById('pbval').innerHTML=pb+'<span class="pct">%</span>';
+
+  // A: stability
+  const margin=(M.d360_roi-pbF)/M.d360_roi;
+  document.getElementById('margin').textContent=(margin*100).toFixed(1)+'%';
+  const stable=M.combined_cv<margin;
+  const pill=document.getElementById('stab-pill');
+  const note=document.getElementById('stab-note');
+  const verdict=document.getElementById('verdict');
+  const vicon=document.getElementById('vicon');
+  const vtxt=document.getElementById('vtxt');
+  if(margin<0){
+    pill.innerHTML='<span class="pill stop">超出能力</span>';
+    note.innerHTML='<b>回本线高于产品 D360 ROI 均值（161%）。</b>这款产品按当前投放结构整体无法达到该回本线，需要从产品侧提升变现或大幅压低 CPA。';
+    verdict.className='verdict unstable';vicon.textContent='✕';
+    vtxt.innerHTML='回本线 <b>'+pb+'%</b> 超过产品 ROI 均值，<b>整体不可达</b>——这不是投放能解决的问题。';
+  }else if(stable){
+    pill.innerHTML='<span class="pill go">稳定</span>';
+    note.innerHTML='合并 CV（0.240）< 决策余量（'+(margin*100).toFixed(1)+'%）。变现波动不足以翻转回本判断，<b>可用全量均值分析</b>。';
+    verdict.className='verdict stable';vicon.textContent='✓';
+    vtxt.innerHTML='回本线 <b>'+pb+'%</b> 下决策余量 <b>'+(margin*100).toFixed(1)+'%</b> > 合并CV <b>0.240</b>，分析<b>稳定可用</b>。';
+  }else{
+    pill.innerHTML='<span class="pill warn">需检查趋势</span>';
+    note.innerHTML='合并 CV（0.240）≥ 决策余量（'+(margin*100).toFixed(1)+'%）。变现波动可能影响回本判断——需画月度趋势图：若为随机波动可继续用均值（标注低置信度），若为趋势性变化须分段处理。本数据经查为随机波动。';
+    verdict.className='verdict unstable';vicon.textContent='!';
+    vtxt.innerHTML='回本线 <b>'+pb+'%</b> 下决策余量仅 <b>'+(margin*100).toFixed(1)+'%</b> ≤ 合并CV <b>0.240</b>，<b>安全垫偏薄</b>，对投放质量要求更高。';
+  }
+
+  // B: D1 critical
+  const crit=interpD1(pbF);
+  const cv=document.getElementById('crit-val');
+  const cn=document.getElementById('crit-note');
+  if(crit===null){
+    cv.textContent='—';cv.className='crit-val hard';
+    cn.textContent='当前回本线在历史数据中找不到对应的 D1 档位（过高或过低）';
+  }else{
+    cv.textContent='≥ '+(crit*100).toFixed(1)+'%';
+    cv.className='crit-val'+(crit>0.15?' hard':'');
+    cn.textContent='历史上 D1 留存低于此值的批次，几乎都未能在 D360 触及 '+pb+'% 回本线';
+  }
+
+  // C: thresholds via amplification
+  const amp=data.amp.all;
+  const rows=[['D7',amp.d7_d360],['D30',amp.d30_d360]];
+  let th='';
+  rows.forEach(([lbl,a])=>{
+    const go=pbF/a.p25*100;   // 保守:需要更高早期ROI
+    const stop=pbF/a.p75*100; // 乐观系数下都达不到->停
+    th+='<div class="thresh-row"><div class="thresh-label">'+lbl+' ROI</div><div class="bar">'+
+      '<div class="seg stop" style="width:25%">&lt;'+stop.toFixed(1)+'%</div>'+
+      '<div class="seg warn" style="width:30%">'+stop.toFixed(1)+'~'+go.toFixed(1)+'%</div>'+
+      '<div class="seg go" style="width:45%">&ge;'+go.toFixed(1)+'%</div>'+
+      '</div></div>';
+  });
+  document.getElementById('thresh').innerHTML=th;
+
+  // D: matrices (static, don't depend on pb, but color by current payback)
+  renderMatrix('ltv-mat',data.ltv_matrix,'$',pbF,false);
+  renderMatrix('roi-mat',data.roi_matrix,'%',pbF,true);
+}
+
+function renderMatrix(id,mat,unit,pbF,isRoi){
+  const cols=['低','中','高'];const rows=['低','中','高'];
+  let h='<div class="mcell hdr">D1\\CPA</div>';
+  cols.forEach(c=>h+='<div class="mcell hdr">CPA '+c+'</div>');
+  rows.forEach(r=>{
+    h+='<div class="mcell rhdr">D1 '+r+'</div>';
+    cols.forEach(c=>{
+      const v=mat[r][c];
+      let cls='data';
+      if(isRoi){
+        const pass=v>=pbF*100;
+        h+='<div class="mcell data" style="color:'+(pass?'var(--go)':'var(--stop)')+'">'+v.toFixed(0)+'<span class="unit">%</span></div>';
+      }else{
+        h+='<div class="mcell data">'+unit+v.toFixed(2)+'</div>';
+      }
+    });
+  });
+  document.getElementById(id).innerHTML=h;
+}
+
+const slider=document.getElementById('slider');
+slider.addEventListener('input',e=>{
+  const v=+e.target.value;
+  render(v);
+  document.querySelectorAll('.preset').forEach(p=>p.classList.toggle('active',+p.dataset.v===v));
+});
+document.querySelectorAll('.preset').forEach(p=>{
+  p.addEventListener('click',()=>{
+    slider.value=p.dataset.v;render(+p.dataset.v);
+    document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+  });
+});
+render(150);
+</script>
+</body>
+</html>
