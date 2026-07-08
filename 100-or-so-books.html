@@ -1,0 +1,618 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color: #ffffff; --text-color: #333333; --select-text-bg-color: #B5D6FC; --select-text-font-color: auto; --monospace: "Lucida Console",Consolas,"Courier",monospace; --title-bar-height: 20px; }
+.mac-os-11 { --title-bar-height: 28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, h5 { white-space: pre-wrap; }
+body { margin: 0px; padding: 0px; height: auto; inset: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; position: relative; }
+#write svg h1, #write svg h2, #write svg h3, #write svg h4, #write svg h5, #write svg h6, #write svg p { position: static; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+thead, tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-fences-adv-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+svg { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; border-color: transparent !important; padding-top: 0px !important; padding-bottom: 0px !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+  #write > p:nth-child(1) { margin-top: 0px; }
+  .typora-export-show-outline .typora-export-sidebar { display: none; }
+  figure { overflow-x: visible; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.reversefootnote { font-family: ui-monospace, sans-serif; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.6; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+.md-expand mark .md-meta { opacity: 0.3 !important; }
+mark .md-meta { color: rgb(0, 0, 0); }
+@media print {
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-fences.md-fences-math { font-size: 1em; }
+.md-fences-advanced:not(.md-focus) { padding: 0px; white-space: nowrap; border: 0px; }
+.md-fences-advanced:not(.md-focus) { background: inherit; }
+.mermaid-svg { margin: auto; }
+.typora-export-show-outline .typora-export-content { max-width: 1440px; margin: auto; display: flex; flex-direction: row; }
+.typora-export-sidebar { width: 300px; font-size: 0.8rem; margin-top: 80px; margin-right: 18px; }
+.typora-export-show-outline #write { --webkit-flex: 2; flex: 2 1 0%; }
+.typora-export-sidebar .outline-content { position: fixed; top: 0px; max-height: 100%; overflow: hidden auto; padding-bottom: 30px; padding-top: 60px; width: 300px; }
+@media screen and (max-width: 1024px) {
+  .typora-export-sidebar, .typora-export-sidebar .outline-content { width: 240px; }
+}
+@media screen and (max-width: 800px) {
+  .typora-export-sidebar { display: none; }
+}
+.outline-content li, .outline-content ul { margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; list-style: none; overflow-wrap: anywhere; }
+.outline-content ul { margin-top: 0px; margin-bottom: 0px; }
+.outline-content strong { font-weight: 400; }
+.outline-expander { width: 1rem; height: 1.42857rem; position: relative; display: table-cell; vertical-align: middle; cursor: pointer; padding-left: 4px; }
+.outline-expander::before { content: ""; position: relative; font-family: Ionicons; display: inline-block; font-size: 8px; vertical-align: middle; }
+.outline-item { padding-top: 3px; padding-bottom: 3px; cursor: pointer; }
+.outline-expander:hover::before { content: ""; }
+.outline-h1 > .outline-item { padding-left: 0px; }
+.outline-h2 > .outline-item { padding-left: 1em; }
+.outline-h3 > .outline-item { padding-left: 2em; }
+.outline-h4 > .outline-item { padding-left: 3em; }
+.outline-h5 > .outline-item { padding-left: 4em; }
+.outline-h6 > .outline-item { padding-left: 5em; }
+.outline-label { cursor: pointer; display: table-cell; vertical-align: middle; text-decoration: none; color: inherit; }
+.outline-label:hover { text-decoration: underline; }
+.outline-item:hover { border-color: rgb(245, 245, 245); background-color: var(--item-hover-bg-color); }
+.outline-item:hover { margin-left: -28px; margin-right: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; }
+.outline-item-single .outline-expander::before, .outline-item-single .outline-expander:hover::before { display: none; }
+.outline-item-open > .outline-item > .outline-expander::before { content: ""; }
+.outline-children { display: none; }
+.info-panel-tab-wrapper { display: none; }
+.outline-item-open > .outline-children { display: block; }
+.typora-export .outline-item { padding-top: 1px; padding-bottom: 1px; }
+.typora-export .outline-item:hover { margin-right: -8px; border-right: 8px solid transparent; }
+.typora-export .outline-expander::before { content: "+"; font-family: inherit; top: -1px; }
+.typora-export .outline-expander:hover::before, .typora-export .outline-item-open > .outline-item > .outline-expander::before { content: "−"; }
+.typora-export-collapse-outline .outline-children { display: none; }
+.typora-export-collapse-outline .outline-item-open > .outline-children, .typora-export-no-collapse-outline .outline-children { display: block; }
+.typora-export-no-collapse-outline .outline-expander::before { content: "" !important; }
+.typora-export-show-outline .outline-item-active > .outline-item .outline-label { font-weight: 700; }
+.md-inline-math-container mjx-container { zoom: 0.95; }
+mjx-container { break-inside: avoid; }
+.md-alert.md-alert-note { border-left-color: rgb(9, 105, 218); }
+.md-alert.md-alert-important { border-left-color: rgb(130, 80, 223); }
+.md-alert.md-alert-warning { border-left-color: rgb(154, 103, 0); }
+.md-alert.md-alert-tip { border-left-color: rgb(31, 136, 61); }
+.md-alert.md-alert-caution { border-left-color: rgb(207, 34, 46); }
+.md-alert { padding: 0px 1em; margin-bottom: 16px; color: inherit; border-left: 0.25em solid rgb(0, 0, 0); }
+.md-alert-text-note { color: rgb(9, 105, 218); }
+.md-alert-text-important { color: rgb(130, 80, 223); }
+.md-alert-text-warning { color: rgb(154, 103, 0); }
+.md-alert-text-tip { color: rgb(31, 136, 61); }
+.md-alert-text-caution { color: rgb(207, 34, 46); }
+.md-alert-text { font-size: 0.9rem; font-weight: 700; }
+.md-alert-text svg { fill: currentcolor; position: relative; top: 0.125em; margin-right: 1ch; overflow: visible; }
+.md-alert-text-container::after { content: attr(data-text); text-transform: capitalize; pointer-events: none; margin-right: 1ch; }
+
+
+:root {
+    --side-bar-bg-color: #fafafa;
+    --control-text-color: #777;
+}
+
+@include-when-export url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
+
+/* open-sans-regular - latin-ext_latin */
+  /* open-sans-italic - latin-ext_latin */
+    /* open-sans-700 - latin-ext_latin */
+    /* open-sans-700italic - latin-ext_latin */
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+  	margin: 0 auto;
+  	padding: 30px;
+    padding-bottom: 100px;
+}
+
+@media only screen and (min-width: 1400px) {
+	#write {
+		max-width: 1024px;
+	}
+}
+
+@media only screen and (min-width: 1800px) {
+	#write {
+		max-width: 1200px;
+	}
+}
+
+#write > ul:first-child,
+#write > ol:first-child{
+    margin-top: 30px;
+}
+
+a {
+    color: #4183C4;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    cursor: text;
+}
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+h1 tt,
+h1 code {
+    font-size: inherit;
+}
+h2 tt,
+h2 code {
+    font-size: inherit;
+}
+h3 tt,
+h3 code {
+    font-size: inherit;
+}
+h4 tt,
+h4 code {
+    font-size: inherit;
+}
+h5 tt,
+h5 code {
+    font-size: inherit;
+}
+h6 tt,
+h6 code {
+    font-size: inherit;
+}
+h1 {
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+h2 {
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+
+/*@media print {
+    .typora-export h1,
+    .typora-export h2 {
+        border-bottom: none;
+        padding-bottom: initial;
+    }
+
+    .typora-export h1::after,
+    .typora-export h2::after {
+        content: "";
+        display: block;
+        height: 100px;
+        margin-top: -96px;
+        border-top: 1px solid #eee;
+    }
+}*/
+
+h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+h4 {
+    font-size: 1.25em;
+}
+h5 {
+    font-size: 1em;
+}
+h6 {
+   font-size: 1em;
+    color: #777;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table{
+    margin: 0.8em 0;
+}
+li>ol,
+li>ul {
+    margin: 0 0;
+}
+hr {
+    height: 2px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+li p.first {
+    display: inline-block;
+}
+ul,
+ol {
+    padding-left: 30px;
+}
+ul:first-child,
+ol:first-child {
+    margin-top: 0;
+}
+ul:last-child,
+ol:last-child {
+    margin-bottom: 0;
+}
+blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding: 0 15px;
+    color: #777777;
+}
+blockquote blockquote {
+    padding-right: 0;
+}
+table {
+    padding: 0;
+    word-break: initial;
+}
+table tr {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+table tr:nth-child(2n),
+thead {
+    background-color: #f8f8f8;
+}
+table th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    margin: 0;
+    padding: 6px 13px;
+}
+table td {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 6px 13px;
+}
+table th:first-child,
+table td:first-child {
+    margin-top: 0;
+}
+table th:last-child,
+table td:last-child {
+    margin-bottom: 0;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    border-top: 1px solid #eef2f2;
+}
+
+.md-fences,
+code,
+tt {
+    border: 1px solid #e7eaed;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    padding: 0;
+    padding: 2px 4px 0px 4px;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+
+.md-task-list-item > input {
+  margin-left: -1.3em;
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+    pre {
+        page-break-inside: avoid;
+        word-wrap: break-word;
+    }
+}
+
+.md-fences {
+	background-color: #f8f8f8;
+}
+#write pre.md-meta-block {
+	padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: 3px;
+    color: #777777;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+	bottom: .375rem;
+}
+
+.md-mathjax-midline {
+    background: #fafafa;
+}
+
+#write>h3.md-focus:before{
+	left: -1.5625rem;
+	top: .375rem;
+}
+#write>h4.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h5.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h6.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+.md-image>.md-meta {
+    /*border: 1px solid #ddd;*/
+    border-radius: 3px;
+    padding: 2px 0px 0px 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: #a7a7a7;
+    opacity: 1;
+}
+
+.md-toc { 
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: #FAFAFA;
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+/** focus mode */
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+header, .context-menu, .megamenu-content, footer{
+    font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state{
+    visibility: visible;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: #fafafa;
+    background-color: var(--side-bar-bg-color);
+}
+
+.mac-os #write{
+    caret-color: AccentColor;
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+/*.html-for-mac {
+    --item-hover-bg-color: #E6F0FE;
+}*/
+
+#md-notification .btn {
+    border: 0;
+}
+
+.dropdown-menu .divider {
+    border-color: #e5e5e5;
+    opacity: 0.4;
+}
+
+.ty-preferences .window-content {
+    background-color: #fafafa;
+}
+
+.ty-preferences .nav-group-item.active {
+    color: white;
+    background: #999;
+}
+
+.menu-item-container a.menu-style-btn {
+    background-color: #f5f8fa;
+    background-image: linear-gradient( 180deg , hsla(0, 0%, 100%, 0.8), hsla(0, 0%, 100%, 0)); 
+}
+
+
+
+</style><title>100-or-so-books</title>
+</head>
+<body class='typora-export os-windows'><div class='typora-export-content'>
+<div id='write'  class=''><h1 id='塑造一个世纪科学的-100-本书'><span>塑造一个世纪科学的 100 本书</span></h1><p><strong><span>作者：Philip Morrison &amp; Phylis Morrison</span></strong><span> | </span><em><span>American Scientist，1999 年 11–12 月，第 87 卷，第 6 期</span></em></p><p><a href='https://www.americanscientist.org/article/100-or-so-books-that-shaped-a-century-of-science' target='_blank' class='url'>https://www.americanscientist.org/article/100-or-so-books-that-shaped-a-century-of-science</a></p><hr /><h2 id='传记'><span>传记</span></h2><ul><li><p><span>Charles Darwin — </span><strong><span>《自传》</span></strong><span>（Autobiography，1950）</span></p></li><li><p><span>G. H. Hardy — </span><strong><span>《一个数学家的辩白》</span></strong><span>（A Mathematician&#39;s Apology，1940）</span></p></li><li><p><span>James Watson — </span><strong><span>《双螺旋》</span></strong><span>（The Double Helix，1968）</span></p></li><li><p><span>Freeman Dyson — </span><strong><span>《扰动宇宙》</span></strong><span>（Disturbing the Universe，1979）</span></p></li><li><p><span>Richard Feynman — </span><strong><span>《别闹了，费曼先生》</span></strong><span>（Surely You&#39;re Joking, Mr. Feynman!，1985）</span></p></li></ul><hr /><h2 id='图鉴与工具书'><span>图鉴与工具书</span></h2><ul><li><p><span>William Garnett — </span><strong><span>《航空摄影》</span></strong><span>（Aerial Photographs，1994）</span></p></li><li><p><span>Jonathan Kingdon — </span><strong><span>《东非哺乳动物：非洲进化图集》</span></strong><span>（East African Mammals: An Atlas of Evolution in Africa，1971）</span></p></li><li><p><span>Lynn Margulis &amp; Karlene V. Schwartz — </span><strong><span>《五界：地球生命门类图解指南》</span></strong><span>（Five Kingdoms，1998，第 3 版）</span></p></li><li><p><span>Ward Ritchie Press — </span><strong><span>《美国摄影地图集》</span></strong><span>（Photo-Atlas of the United States，1975）</span></p></li><li><p><span>Roger Tory Peterson — </span><strong><span>《鸟类野外指南》</span></strong><span>（A Field Guide to the Birds，1934）</span></p></li><li><p><span>Allan Sandage — </span><strong><span>《哈勃星系图集》</span></strong><span>（The Hubble Atlas of Galaxies，1961）</span></p></li><li><p><span>John S. Shelton — </span><strong><span>《图解地质学》</span></strong><span>（Geology Illustrated，1966）</span></p></li><li><p><span>John Steinbeck &amp; E. F. Ricketts — </span><strong><span>《科尔特斯海》</span></strong><span>（Sea of Cortez，1941）</span></p></li><li><p><span>Bradley, Craigie, Murray &amp; Onions（编）— </span><strong><span>《牛津英语词典》</span></strong><span>（Oxford English Dictionary，1933）</span></p></li><li><p><span>Liberty Hyde Bailey — </span><strong><span>《园艺大典》</span></strong><span>（Hortus，1930）</span></p></li></ul><hr /><h2 id='物理科学'><span>物理科学</span></h2><h3 id='探索性著作'><span>探索性著作</span></h3><ul><li><p><span>Timothy Ferris — </span><strong><span>《天地万有》</span></strong><span>（The Whole Shebang，1997）</span></p></li><li><p><span>George Gamow — </span><strong><span>《从一到无穷大》</span></strong><span>（One, Two, Three… Infinity，1947）</span></p></li><li><p><span>Stephen Hawking — </span><strong><span>《时间简史》</span></strong><span>（A Brief History of Time，1988）</span></p></li><li><p><span>Douglas Hofstadter &amp; Daniel Dennett — </span><strong><span>《心我论》</span></strong><span>（The Mind&#39;s I，1981）</span></p></li><li><p><span>Kenneth Hsu &amp; William Ryan — </span><strong><span>《地中海曾是一片沙漠》</span></strong><span>（The Mediterranean Was a Desert，1983）</span></p></li><li><p><span>Georges Ifrah — </span><strong><span>《从零到一：数字通史》</span></strong><span>（From One to Zero，1985）</span></p></li><li><p><span>Primo Levi — </span><strong><span>《元素周期表》</span></strong><span>（The Periodic Table，1984）</span></p></li><li><p><span>John McPhee — </span><strong><span>《太古世界编年史》</span></strong><span>（Annals of the Former World，1998）</span></p></li><li><p><span>Carl Sagan — </span><strong><span>《暗淡蓝点》</span></strong><span>（The Pale Blue Dot，1994）</span></p></li><li><p><span>Steven Weinberg — </span><strong><span>《终极理论之梦》</span></strong><span>（Dreams of a Final Theory，1992）</span></p></li><li><p><span>Herman Weyl — </span><strong><span>《对称》</span></strong><span>（Symmetry，1952）</span></p></li></ul><h3 id='专著'><span>专著</span></h3><ul><li><p><span>Paul Dirac — </span><strong><span>《量子力学》</span></strong><span>（Quantum Mechanics，1930）</span></p></li><li><p><span>Albert Einstein — </span><strong><span>《爱因斯坦全集：瑞士岁月，1902–09》</span></strong><span>（The Collected Papers of Albert Einstein，1930）</span></p></li><li><p><span>Benoit B. Mandelbrot — </span><strong><span>《分形》</span></strong><span>（Fractals，1977）</span></p></li><li><p><span>Linus Pauling — </span><strong><span>《化学键的本质》</span></strong><span>（Nature of the Chemical Bond，1939）</span></p></li><li><p><span>Bertrand Russell &amp; Alfred North Whitehead — </span><strong><span>《数学原理》</span></strong><span>（Principia Mathematica，1910–13，3 卷）</span></p></li><li><p><span>Cyril Smith — </span><strong><span>《结构之探》</span></strong><span>（Search For Structure，1981）</span></p></li><li><p><span>John von Neumann &amp; Oskar Morgenstern — </span><strong><span>《博弈论与经济行为》</span></strong><span>（Theory of Games and Economic Behavior，1944）</span></p></li><li><p><span>Norbert Wiener — </span><strong><span>《控制论》</span></strong><span>（Cybernetics，1948）</span></p></li><li><p><span>R. B. Woodward &amp; Roald Hoffmann — </span><strong><span>《轨道对称守恒》</span></strong><span>（Conservation of Orbital Symmetry，1970）</span></p></li><li><p><span>Albert Einstein — </span><strong><span>《相对论的意义》</span></strong><span>（The Meaning of Relativity，1922）</span></p></li><li><p><span>Richard Feynman — </span><strong><span>《QED：光和物质的奇妙理论》</span></strong><span>（QED，1985）</span></p></li><li><p><span>Donald Knuth — </span><strong><span>《计算机程序设计艺术》</span></strong><span>（The Art of Computer Programming，1968）</span></p></li></ul><hr /><h2 id='科学史'><span>科学史</span></h2><ul><li><p><span>A. Pais — </span><strong><span>《内敛之途》</span></strong><span>（Inward Bound，1986）</span></p></li><li><p><span>John Desmond Bernal — </span><strong><span>《历史上的科学》</span></strong><span>（Science in History，1954）</span></p></li><li><p><span>Paul de Kruif — </span><strong><span>《微生物猎人》</span></strong><span>（Microbe Hunters，1926）</span></p></li><li><p><span>Martin Gardner — </span><strong><span>《以科学之名：科学中的谬论与误区》</span></strong><span>（Fads and Fallacies in the Name of Science，1952）</span></p></li><li><p><span>Arthur O. Lovejoy — </span><strong><span>《存在巨链》</span></strong><span>（The Great Chain of Being，1936）</span></p></li><li><p><span>Joseph Needham — </span><strong><span>《中国科学技术史》</span></strong><span>（Science and Civilization in China，1947）</span></p></li><li><p><span>Richard Rhodes — </span><strong><span>《原子弹秘史》</span></strong><span>（The Making of the Atomic Bomb，1986）</span></p></li><li><p><span>Charles Singer, E. J. Holmyard &amp; A. R. Hall — </span><strong><span>《技术史》</span></strong><span>（A History of Technology，1954）</span></p></li><li><p><span>Tom Wolfe — </span><strong><span>《真材实料》</span></strong><span>（The Right Stuff，1979）</span></p></li></ul><hr /><h2 id='科学自身的省思'><span>科学自身的省思</span></h2><ul><li><p><span>Vannevar Bush — </span><strong><span>《科学：无尽的边疆》</span></strong><span>（Science, the Endless Frontier，1945）</span></p></li><li><p><span>Thomas Kuhn — </span><strong><span>《科学革命的结构》</span></strong><span>（The Structure of Scientific Revolutions，1962）</span></p></li><li><p><span>Peter B. Medawar — </span><strong><span>《可解的艺术》</span></strong><span>（The Art of the Soluble，1967）</span></p></li><li><p><span>Karl Popper — </span><strong><span>《科学发现的逻辑》</span></strong><span>（The Logic of Scientific Discovery，1934）</span></p></li><li><p><span>C. P. Snow — </span><strong><span>《两种文化》</span></strong><span>（The Two Cultures，1959）</span></p></li><li><p><span>Alfred North Whitehead — </span><strong><span>《科学与现代世界》</span></strong><span>（Science and the Modern World，1945）</span></p></li></ul><hr /><h2 id='多彩生命世界'><span>多彩生命世界</span></h2><h3 id='探索性著作-2'><span>探索性著作</span></h3><ul><li><p><span>William Beebe — </span><strong><span>《丛林岁月》</span></strong><span>（Jungle Days，1925）</span></p></li><li><p><span>Rachel Carson — </span><strong><span>《寂静的春天》</span></strong><span>（Silent Spring，1962）</span></p></li><li><p><span>John R. Horner &amp; James Gorman — </span><strong><span>《挖掘恐龙》</span></strong><span>（Digging Dinosaurs，1988）</span></p></li><li><p><span>François Jacob — </span><strong><span>《可能与现实》</span></strong><span>（The Possible and the Actual，1982）</span></p></li><li><p><span>Aldo Leopold — </span><strong><span>《沙乡年鉴》</span></strong><span>（A Sand County Almanac，1949）</span></p></li><li><p><span>Barry Lopez — </span><strong><span>《北极梦》</span></strong><span>（Arctic Dreams，1986）</span></p></li><li><p><span>Konrad Lorenz — </span><strong><span>《所罗门王的指环》</span></strong><span>（King Solomon&#39;s Ring，1952）</span></p></li><li><p><span>Jacques Monod — </span><strong><span>《偶然与必然》</span></strong><span>（Chance and Necessity，1971）</span></p></li><li><p><span>Richard Preston — </span><strong><span>《高危地带》</span></strong><span>（The Hot Zone，1994）</span></p></li><li><p><span>Lewis Thomas — </span><strong><span>《细胞生命的礼赞》</span></strong><span>（The Lives of a Cell，1974）</span></p></li></ul><h3 id='专著-2'><span>专著</span></h3><ul><li><p><span>Adrian Forsyth &amp; Kenneth Miyata — </span><strong><span>《热带自然》</span></strong><span>（Tropical Nature，1984）</span></p></li><li><p><span>Stephen S. Morse（编）— </span><strong><span>《新兴病毒》</span></strong><span>（Emerging Viruses，1993）</span></p></li><li><p><span>Erwin Schrödinger — </span><strong><span>《生命是什么》</span></strong><span>（What Is Life?，1944）</span></p></li><li><p><span>D&#39;Arcy Thompson — </span><strong><span>《生长与形态》</span></strong><span>（On Growth and Form，1917）</span></p></li><li><p><span>Vladimir Vernadskii — </span><strong><span>《生物圈》</span></strong><span>（The Biosphere，1929/1998）</span></p></li><li><p><span>Alister Clavering Hardy — </span><strong><span>《开阔的海洋：自然史》</span></strong><span>（The Open Sea，1956–59，2 卷）</span></p></li><li><p><span>Edward O. Wilson — </span><strong><span>《昆虫社会》</span></strong><span>（The Insect Societies，1971）</span></p></li></ul><hr /><h2 id='演化之途'><span>演化之途</span></h2><ul><li><p><span>Richard Dawkins — </span><strong><span>《盲眼钟表匠》</span></strong><span>（The Blind Watchmaker，1986）</span></p></li><li><p><span>Stephen Jay Gould — </span><strong><span>《自达尔文以来》</span></strong><span>（Ever Since Darwin，1977）</span></p></li><li><p><span>Jonathan Weiner — </span><strong><span>《鸟喙》</span></strong><span>（The Beak of the Finch，1994）</span></p></li><li><p><span>Richard Goldschmidt — </span><strong><span>《演化的物质基础》</span></strong><span>（The Material Basis of Evolution，1940）</span></p></li><li><p><span>R. A. Fisher — </span><strong><span>《自然选择的遗传理论》</span></strong><span>（The Genetical Theory of Natural Selection，1930）</span></p></li><li><p><span>George Williams — </span><strong><span>《适应与自然选择》</span></strong><span>（Adaptation and Natural Selection，1966）</span></p></li><li><p><span>Howard Gruber with Paul H. Barrett — </span><strong><span>《达尔文论人》</span></strong><span>（Darwin on Man，1974）</span></p></li></ul><hr /><h2 id='人类物种的起源与本质'><span>人类物种的起源与本质</span></h2><h3 id='探索性著作-3'><span>探索性著作</span></h3><ul><li><p><span>Elizabeth Barber — </span><strong><span>《女红》</span></strong><span>（Women&#39;s Work，1994）</span></p></li><li><p><span>Gregory Bateson — </span><strong><span>《迈向心智生态学》</span></strong><span>（Steps to an Ecology of Mind，1972）</span></p></li><li><p><span>Jacob Bronowski — </span><strong><span>《科学与人的价值》</span></strong><span>（Science and Human Values，1965）</span></p></li><li><p><span>Jane Goodall — </span><strong><span>《黑猩猩在召唤》</span></strong><span>（In the Shadow of Man，1988）</span></p></li><li><p><span>R. L. Gregory — </span><strong><span>《智慧之眼》</span></strong><span>（The Intelligent Eye，1970）</span></p></li><li><p><span>Aldous Huxley — </span><strong><span>《知觉之门》</span></strong><span>（The Doors of Perception，1954）</span></p></li><li><p><span>L. S. B. Leakey — </span><strong><span>《亚当的祖先》</span></strong><span>（Adam&#39;s Ancestors，1934）</span></p></li><li><p><span>Steven Pinker — </span><strong><span>《语言本能》</span></strong><span>（The Language Instinct，1994）</span></p></li><li><p><span>Denise Schmandt-Besserat — </span><strong><span>《文字诞生记》</span></strong><span>（How Writing Came About，1996）</span></p></li><li><p><span>George B. Schaller — </span><strong><span>《山地大猩猩》</span></strong><span>（The Mountain Gorilla，1963）</span></p></li><li><p><span>Randy Shilts — </span><strong><span>《世纪的哭泣》</span></strong><span>（And the Band Played On，1987）</span></p></li><li><p><span>Pierre Teilhard de Chardin — </span><strong><span>《人的现象》</span></strong><span>（The Phenomenon of Man，1959）</span></p></li><li><p><span>Lev Vygotsky — </span><strong><span>《思维与语言》</span></strong><span>（Thought and Language，1962）</span></p></li><li><p><span>Charles Leonard Woolley — </span><strong><span>《发掘乌尔王陵》</span></strong><span>（Discovering the Royal Tombs at Ur，1969）</span></p></li></ul><h3 id='专著-3'><span>专著</span></h3><ul><li><p><span>C. K. Brain — </span><strong><span>《猎者与被猎》</span></strong><span>（Hunter and Hunted，1981）</span></p></li><li><p><span>Noam Chomsky — </span><strong><span>《句法结构》</span></strong><span>（Syntactic Structures，1957）</span></p></li><li><p><span>Sigmund Freud — </span><strong><span>《精神分析引论》</span></strong><span>（General Introduction to Psychoanalysis，1920）</span></p></li><li><p><span>Mary Leakey — </span><strong><span>《利特里：坦桑尼亚北部上新世遗址》</span></strong><span>（Laetoli，1987）</span></p></li><li><p><span>Richard Lee — </span><strong><span>《昆桑人》</span></strong><span>（The !Kung San，1979）</span></p></li><li><p><span>André Leroi-Gourhan — </span><strong><span>《史前艺术珍品》</span></strong><span>（Treasures of Prehistoric Art，1967）</span></p></li><li><p><span>Marvin Minsky — </span><strong><span>《心智的社会》</span></strong><span>（The Society of Mind，1986）</span></p></li><li><p><span>Peter &amp; Iona Opie — </span><strong><span>《街头巷尾的儿童游戏》</span></strong><span>（Children&#39;s Games in Street and Playground，1969）</span></p></li><li><p><span>Ivan P. Pavlov — </span><strong><span>《条件反射演讲集》</span></strong><span>（Lectures on Conditioned Reflexes，1926）</span></p></li><li><p><span>Oskar Pfungst — </span><strong><span>《聪明的汉斯》</span></strong><span>（Clever Hans，1911）</span></p></li></ul><hr /><h2 id='小说'><span>小说</span></h2><ul><li><p><span>Sinclair Lewis — </span><strong><span>《阿罗史密斯》</span></strong><span>（Arrowsmith，1925）</span></p></li><li><p><span>Kurt Vonnegut, Jr. — </span><strong><span>《猫的摇篮》</span></strong><span>（Cat&#39;s Cradle，1963）</span></p></li><li><p><span>H. G. Wells — </span><strong><span>《托诺-邦盖》</span></strong><span>（Tono-Bungay，1908）</span></p></li><li><p><span>Thomas Pynchon — </span><strong><span>《万有引力之虹》</span></strong><span>（Gravity&#39;s Rainbow，1973）</span></p></li></ul><hr /><p><strong><span>共计约 105 本书</span></strong><span>（大致对应 20 世纪每年一本）。</span></p><p><span>原文来源：Philip Morrison &amp; Phylis Morrison, &quot;100 or so Books that shaped a Century of Science,&quot; </span><em><span>American Scientist</span></em><span>, November–December 1999, Vol. 87, No. 6.</span></p></div></div>
+</body>
+</html>
