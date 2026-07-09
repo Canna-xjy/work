@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外投毛利测算表 — 买量ROI敏感性分析</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#1a1a2e;padding:24px}
+.container{max-width:1440px;margin:0 auto}
+h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.subtitle{color:#666;font-size:14px;margin-bottom:24px}
+.dashboard{display:grid;grid-template-columns:340px 1fr;gap:20px}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card-title{font-size:14px;font-weight:600;color:#333;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.card-title .badge{font-size:11px;font-weight:500;padding:1px 8px;border-radius:10px;background:#e8f4fd;color:#1a73e8;margin-left:auto}
+.param-group{margin-bottom:16px}
+.param-group:last-child{margin-bottom:0}
+.param-label{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:500;color:#444;margin-bottom:4px}
+.param-label .val{font-weight:600;color:#1a73e8;font-size:15px}
+.param-label .sub{font-weight:400;color:#999;font-size:12px}
+.derived-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8f9ff;border-radius:6px;font-size:13px;margin-top:4px}
+.derived-row .label{color:#666}
+.derived-row .value{font-weight:600;color:#1a73e8}
+.derived-row .note{font-size:11px;color:#e8503a;font-weight:400}
+input[type="range"]{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:#e0e3e8;border-radius:3px;outline:none;cursor:pointer;margin:4px 0}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#1a73e8;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sep{border:none;border-top:1px solid #eee;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:right;padding:8px 12px;border-bottom:1px solid #f0f0f0}
+th{font-weight:600;color:#666;font-size:12px}
+td:first-child,th:first-child{text-align:left}
+tr:last-child td{border-bottom:none;font-weight:600;background:#f8f9ff}
+tr.section td{font-weight:600;color:#333;background:#fafafa;border-bottom:1px solid #e0e0e0}
+.num{font-variant-numeric:tabular-nums}
+.chart-wrapper{position:relative;height:360px;margin-top:8px}
+.opt-badge{display:inline-block;font-size:12px;padding:2px 10px;border-radius:10px;font-weight:500;margin-left:8px}
+.opt-badge.good{background:#e6f7e6;color:#1e7e34}
+.opt-badge.bad{background:#ffe6e6;color:#c62828}
+@media(max-width:900px){.dashboard{grid-template-columns:1fr}}
+.table-wrap{overflow-x:auto}
+.cap-note{font-size:11px;color:#e8503a;font-weight:400}
+.constraint-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff8e1;border-radius:6px;font-size:12px;color:#e65100;margin-bottom:12px}
+.constraint-banner strong{color:#bf360c}
+.no-subsidy-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e8f5e9;border-radius:6px;font-size:12px;color:#1e7e34;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>外投消耗与毛利测算</h1>
+  <div class="subtitle">在200W返利上限约束下，动态测算买量ROI变动对毛利率的影响</div>
+
+  <div class="dashboard">
+    <!-- Left: Parameters -->
+    <div class="card">
+      <div class="card-title">参数设置</div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>买量ROI <span class="sub">(分成后)</span></span>
+          <span class="val" id="lbl_roi">0.50</span>
+        </div>
+        <input type="range" id="inp_roi" min="0" max="1.15" value="0.50" step="0.01">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-top:-2px;">
+          <span>0%</span><span>115%</span>
+        </div>
+      </div>
+
+      <!-- Derived spend display -->
+      <div class="derived-row" id="row_spend_derived">
+        <span class="label">快手头条投放金额 <span id="spend_derived_note"></span></span>
+        <span class="value" id="lbl_spend_derived">—</span>
+      </div>
+
+      <hr class="sep">
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>快手头条投放分成比例</span>
+          <span class="val" id="lbl_share_ks">50%</span>
+        </div>
+        <input type="range" id="inp_share_ks" min="0.1" max="0.9" value="0.5" step="0.01">
+      </div>
+
+      <hr class="sep">
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>目标ROI</span>
+          <span class="val" id="lbl_target">1.15</span>
+        </div>
+        <input type="range" id="inp_target" min="0.8" max="2.0" value="1.15" step="0.01">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>返利金额上限（200W）</span>
+          <span class="val" id="lbl_cap">2,000,000</span>
+        </div>
+        <input type="range" id="inp_cap" min="50000" max="5000000" value="2000000" step="10000">
+      </div>
+
+      <hr class="sep">
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>华为ADS采购ROI</span>
+          <span class="val" id="lbl_roi_hw">0.80</span>
+        </div>
+        <input type="range" id="inp_roi_hw" min="0.1" max="2.0" value="0.80" step="0.01">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>华为分成比例</span>
+          <span class="val" id="lbl_share_hw">90%</span>
+        </div>
+        <input type="range" id="inp_share_hw" min="0.1" max="0.95" value="0.90" step="0.01">
+      </div>
+
+      <div class="param-group">
+        <div class="param-label">
+          <span>服务费率</span>
+          <span class="val" id="lbl_fee">3%</span>
+        </div>
+        <input type="range" id="inp_fee" min="0" max="0.1" value="0.03" step="0.005">
+      </div>
+    </div>
+
+    <!-- Right: Results -->
+    <div>
+      <!-- KPI Summary -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title">
+          <span>综合指标</span>
+          <span class="badge" id="badge_opt"></span>
+        </div>
+        <div id="constraint_area"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;">
+          <div style="text-align:center;padding:12px 8px;background:#f8f9ff;border-radius:8px;">
+            <div style="font-size:11px;color:#999;margin-bottom:4px;">总收入 <span style="font-size:10px;">(万元)</span></div>
+            <div style="font-size:18px;font-weight:700;color:#1a1a2e;" id="kpi_revenue">—</div>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#f8f9ff;border-radius:8px;">
+            <div style="font-size:11px;color:#999;margin-bottom:4px;">总现金消耗 <span style="font-size:10px;">(万元)</span></div>
+            <div style="font-size:18px;font-weight:700;color:#1a1a2e;" id="kpi_cost">—</div>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#e8f5e9;border-radius:8px;">
+            <div style="font-size:11px;color:#999;margin-bottom:4px;">毛利 <span style="font-size:10px;">(万元)</span></div>
+            <div style="font-size:20px;font-weight:700;color:#2e7d32;" id="kpi_profit">—</div>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#e3f2fd;border-radius:8px;">
+            <div style="font-size:11px;color:#999;margin-bottom:4px;">毛利率</div>
+            <div style="font-size:22px;font-weight:700;color:#1565c0;" id="kpi_margin">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Table -->
+      <div class="card">
+        <div class="card-title">
+          <span>计算明细</span>
+          <span class="badge">当前方案</span>
+        </div>
+        <div class="table-wrap">
+          <table id="detail_table">
+            <thead>
+              <tr><th>项目</th><th>快手头条</th><th>华为ADS</th><th>合计</th></tr>
+            </thead>
+            <tbody id="detail_body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sensitivity Chart -->
+      <div class="card" style="margin-top:16px;">
+        <div class="card-title">
+          <span>买量ROI敏感性分析</span>
+          <span class="badge" id="chart_badge"></span>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="sensitivity_chart"></canvas>
+        </div>
+        <div style="display:flex;justify-content:center;gap:24px;margin-top:8px;font-size:12px;color:#666;flex-wrap:wrap;">
+          <span>━ 蓝色线：毛利率</span>
+          <span>● <span style="color:#e8503a;">红点</span>：当前ROI</span>
+          <span>✧ <span style="color:#7b1fa2;">紫点</span>：最优ROI</span>
+          <span>┅ <span style="color:#999;">虚线</span>：目标ROI=1.15</span>
+        </div>
+        <div style="margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+          <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:8px;">敏感性数据表</div>
+          <div class="table-wrap">
+            <table id="sensitivity_table" style="font-size:12px;">
+              <thead>
+                <tr><th>买量ROI</th><th>投放金额</th><th>毛利</th><th>毛利率</th></tr>
+              </thead>
+              <tbody id="sensitivity_tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======= Model =======
+// 核心约束: 补贴返利金 <= 返利上限(200W)
+// 当 ROI < 目标ROI: 投放金额由返利上限推导得出
+// 投放金额 = 返利上限 × 分成比例 / GAP
+function calc(roiAfter, shareKs, target, cap, roiHw, shareHw, feeRate) {
+  const gap = Math.max(target - roiAfter, 0);
+  const hasSubsidy = gap > 0;
+
+  let spend, subsidy, spendHw;
+
+  if (hasSubsidy) {
+    // 在200W返利上限约束下，推导最大可支持的快手头条投放金额
+    spend = cap * shareKs / gap;
+    subsidy = cap; // 充分利用全部返利额度
+    spendHw = subsidy; // 补贴全额投入华为ADS
+  } else {
+    // ROI达到或超过目标，无补贴产生
+    // 此时毛利率与投放金额无关（公式中可消去），设一参考值用于展示
+    spend = 100;
+    subsidy = 0;
+    spendHw = 0;
+  }
+
+  // 快手头条
+  const revenueKs  = spend * roiAfter;
+  const feeKs      = spend * feeRate;
+  const pkgKs      = revenueKs - feeKs;
+
+  // 华为ADS
+  const roiAfterHw = roiHw * shareHw;
+  const revenueHw  = spendHw * roiAfterHw;
+  const feeHw      = 0; // 原模型中华为ADS不扣服务费
+  const pkgHw      = revenueHw - feeHw;
+
+  // 汇总
+  const totalRevenue = pkgKs + pkgHw;
+  const totalCost    = spend;
+  const profit       = totalRevenue - totalCost;
+  const margin       = totalRevenue > 0 ? profit / totalRevenue : 0;
+  const buyRoiBefore = roiAfter / shareKs;
+
+  return {
+    buyRoiBefore, roiAfter, gap, hasSubsidy,
+    subsidyRaw: hasSubsidy ? spend * gap / shareKs : 0,
+    subsidy,
+    revenueKs, feeKs, pkgKs,
+    spend, spendHw,
+    roiAfterHw, revenueHw, feeHw, pkgHw,
+    totalRevenue, totalCost, profit, margin,
+  };
+}
+
+// 无补贴时的毛利率公式(与投放金额无关)
+function marginNoSubsidy(roiAfter, feeRate) {
+  return (roiAfter - feeRate - 1) / (roiAfter - feeRate);
+}
+
+// ======= Formatting =======
+const fmt1   = v => Number(v).toFixed(1);
+const fmt2   = v => Number(v).toFixed(2);
+const fmtPct = v => (Number(v) * 100).toFixed(1) + '%';
+const fmtWan = v => {
+  var n = Number(v) / 10000;
+  if (Math.abs(n) >= 1) return n.toLocaleString('zh-CN', {minimumFractionDigits:2, maximumFractionDigits:2}) + '万';
+  return n.toFixed(4) + '万';
+};
+
+// ======= DOM refs =======
+const $ = id => document.getElementById(id);
+const insp = {
+  roi:     $('inp_roi'),
+  shareKs: $('inp_share_ks'),
+  target:  $('inp_target'),
+  cap:     $('inp_cap'),
+  roiHw:   $('inp_roi_hw'),
+  shareHw: $('inp_share_hw'),
+  fee:     $('inp_fee'),
+};
+const lbl = {
+  roi:     $('lbl_roi'),
+  shareKs: $('lbl_share_ks'),
+  target:  $('lbl_target'),
+  cap:     $('lbl_cap'),
+  roiHw:   $('lbl_roi_hw'),
+  shareHw: $('lbl_share_hw'),
+  fee:     $('lbl_fee'),
+  spendDerived: $('lbl_spend_derived'),
+  spendNote:    $('spend_derived_note'),
+};
+
+// ======= Chart =======
+let chart = null;
+
+function buildChartData(shareKs, target, cap, roiHw, shareHw, feeRate, currentRoi) {
+  const points = [];
+  let maxVal = -Infinity;
+  let optRoi = currentRoi;
+
+  for (let r = 0; r <= 1.15 + 0.001; r += 0.01) {
+    const res = calc(r, shareKs, target, cap, roiHw, shareHw, feeRate);
+    points.push({ roi: r, margin: res.margin });
+    if (res.margin > maxVal) { maxVal = res.margin; optRoi = r; }
+  }
+  return { points, optRoi, maxVal };
+}
+
+function renderChart(shareKs, target, cap, roiHw, shareHw, feeRate, currentRoi) {
+  const { points, optRoi, maxVal } = buildChartData(shareKs, target, cap, roiHw, shareHw, feeRate, currentRoi);
+  const labels = points.map(p => (p.roi * 100).toFixed(0) + '%');
+  const values = points.map(p => p.margin * 100); // 毛利率%
+  const curIdx = Math.round(currentRoi / 0.01);
+  const optIdx = Math.round(optRoi / 0.01);
+  const targetIdx = Math.round(target / 0.01);
+
+  if (chart) chart.destroy();
+  const ctx = $('sensitivity_chart').getContext('2d');
+
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: '毛利率',
+        data: values,
+        borderColor: '#1a73e8',
+        backgroundColor: 'rgba(26,115,232,0.08)',
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHitRadius: 4,
+        tension: 0.3,
+        fill: true,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => '买量ROI: ' + items[0].label,
+            label: item => '毛利率: ' + Number(item.raw).toFixed(1) + '%'
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '买量ROI (分成后)', font: { size: 11 } },
+          ticks: {
+            maxTicksLimit: 15,
+            callback: (v, i) => {
+              var roi = i * 0.01;
+              if ([0, 0.2, 0.5, 0.8, 1.0, 1.15].includes(Math.round(roi*100)/100)) return (roi * 100).toFixed(0) + '%';
+              return '';
+            }
+          },
+          grid: { display: false }
+        },
+        y: {
+          title: { display: true, text: '毛利率 (%)', font: { size: 11 } },
+          ticks: { callback: v => v.toFixed(0) + '%' },
+          grid: { color: 'rgba(0,0,0,0.05)' }
+        }
+      }
+    },
+    plugins: [{
+      id: 'customMarkers',
+      afterDraw(chart) {
+        const c = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        const w = chart.chartArea;
+
+        // Draw target ROI vertical line
+        if (targetIdx >= 0 && targetIdx < meta.data.length) {
+          const pt = meta.data[targetIdx];
+          c.beginPath();
+          c.setLineDash([5, 4]);
+          c.moveTo(pt.x, w.top);
+          c.lineTo(pt.x, w.bottom);
+          c.strokeStyle = '#999';
+          c.lineWidth = 1.5;
+          c.stroke();
+          c.setLineDash([]);
+          c.fillStyle = '#999';
+          c.font = '11px sans-serif';
+          c.textAlign = 'center';
+          c.fillText('目标ROI=' + (target*100).toFixed(0) + '%', pt.x, w.bottom + 14);
+        }
+
+        // Current ROI marker (red)
+        if (curIdx >= 0 && curIdx < meta.data.length) {
+          const pt = meta.data[curIdx];
+          const val = values[curIdx];
+          c.beginPath();
+          c.arc(pt.x, pt.y, 7, 0, 2 * Math.PI);
+          c.fillStyle = '#e8503a';
+          c.fill();
+          c.strokeStyle = '#fff';
+          c.lineWidth = 2;
+          c.stroke();
+          c.fillStyle = '#e8503a';
+          c.font = 'bold 12px sans-serif';
+          c.textAlign = 'center';
+          c.fillText('当前 ' + val.toFixed(1) + '%', pt.x, pt.y - 14);
+        }
+
+        // Optimal ROI marker (purple diamond)
+        if (optIdx >= 0 && optIdx < meta.data.length && Math.abs(optIdx - curIdx) > 1) {
+          const pt2 = meta.data[optIdx];
+          const val2 = values[optIdx];
+          const s = 7;
+          c.beginPath();
+          c.moveTo(pt2.x, pt2.y - s);
+          c.lineTo(pt2.x + s, pt2.y);
+          c.lineTo(pt2.x, pt2.y + s);
+          c.lineTo(pt2.x - s, pt2.y);
+          c.closePath();
+          c.fillStyle = '#7b1fa2';
+          c.fill();
+          c.strokeStyle = '#fff';
+          c.lineWidth = 2;
+          c.stroke();
+          c.fillStyle = '#7b1fa2';
+          c.font = 'bold 12px sans-serif';
+          c.textAlign = 'center';
+          c.fillText('最优 ' + val2.toFixed(1) + '%', pt2.x, pt2.y - 14);
+        }
+      }
+    }]
+  });
+
+  // Update chart badge
+  const badge = $('chart_badge');
+  const optPct = (optRoi * 100).toFixed(1);
+  const isOptimal = Math.abs(currentRoi - optRoi) < 0.01;
+  if (isOptimal) {
+    badge.textContent = '✓ 当前已达最优 (毛利率 ' + (maxVal*100).toFixed(1) + '%)';
+    badge.style.cssText = 'background:#e6f7e6;color:#1e7e34;font-size:11px;font-weight:500;padding:1px 8px;border-radius:10px;margin-left:auto';
+  } else {
+    badge.textContent = '最优买量ROI: ' + optPct + '% → 毛利率 ' + (maxVal*100).toFixed(1) + '%';
+    badge.style.cssText = 'background:#fff3e0;color:#e65100;font-size:11px;font-weight:500;padding:1px 8px;border-radius:10px;margin-left:auto';
+  }
+
+  return { optRoi, maxVal };
+}
+
+// ======= Main Render =======
+function render() {
+  const roi     = parseFloat(insp.roi.value);
+  const shareKs = parseFloat(insp.shareKs.value);
+  const target  = parseFloat(insp.target.value);
+  const cap     = parseFloat(insp.cap.value);
+  const roiHw   = parseFloat(insp.roiHw.value);
+  const shareHw = parseFloat(insp.shareHw.value);
+  const fee     = parseFloat(insp.fee.value);
+
+  // Update labels
+  lbl.roi.textContent     = fmt2(roi);
+  lbl.shareKs.textContent = (shareKs * 100).toFixed(0) + '%';
+  lbl.target.textContent  = fmt2(target);
+  lbl.cap.textContent     = fmtWan(cap);
+  lbl.roiHw.textContent   = fmt2(roiHw);
+  lbl.shareHw.textContent = (shareHw * 100).toFixed(0) + '%';
+  lbl.fee.textContent     = (fee * 100).toFixed(1) + '%';
+
+  // Calculate
+  const res = calc(roi, shareKs, target, cap, roiHw, shareHw, fee);
+
+  // Derived spend display
+  if (res.hasSubsidy) {
+    lbl.spendDerived.textContent = fmtWan(res.spend);
+    lbl.spendNote.textContent = '(由200W上限推导)';
+    document.getElementById('row_spend_derived').style.display = 'flex';
+  } else {
+    lbl.spendDerived.textContent = '无约束（无补贴）';
+    lbl.spendNote.textContent = '';
+    document.getElementById('row_spend_derived').style.display = 'flex';
+  }
+
+  // Constraint banner
+  const constraintArea = document.getElementById('constraint_area');
+  if (res.hasSubsidy) {
+    constraintArea.innerHTML = '<div class="constraint-banner">' +
+      '<span>🔒</span>' +
+      '<span>200W返利上限约束：投放金额 <strong>' + fmtWan(res.spend) + '</strong> = 返利上限 ' + fmtWan(cap) + ' × 分成比例 ' + (shareKs*100).toFixed(0) + '% ÷ GAP ' + fmt2(target - roi) + '</span>' +
+    '</div>';
+  } else {
+    constraintArea.innerHTML = `<div class="no-subsidy-banner">
+      <span>✓</span>
+      <span>买量ROI已达到目标ROI，无补贴产生。毛利率 = (ROI − 服务费率 − 1) / (ROI − 服务费率)，与投放金额无关</span>
+    </div>`;
+  }
+
+  // KPI summary
+  $('kpi_revenue').textContent = fmtWan(res.totalRevenue);
+  $('kpi_cost').textContent    = fmtWan(res.totalCost);
+  $('kpi_profit').textContent  = fmtWan(res.profit);
+  $('kpi_margin').textContent  = (res.margin * 100).toFixed(1) + '%';
+
+  // Badge
+  const badge = $('badge_opt');
+  if (res.margin > 0.20) {
+    badge.textContent = '毛利率 ' + (res.margin * 100).toFixed(1) + '% ✓';
+    badge.className = 'badge opt-badge good';
+  } else {
+    badge.textContent = '毛利率 ' + (res.margin * 100).toFixed(1) + '%';
+    badge.className = 'badge opt-badge bad';
+  }
+
+  // Detail table
+  const tbody = $('detail_body');
+  const rows = [
+    { label: '投放金额(现金支出)', ks: fmtWan(res.spend), hw: res.hasSubsidy ? fmtWan(res.spendHw) : '—', total: fmtWan(res.spend) },
+    { label: '采购ROI(分成前)', ks: fmt2(res.buyRoiBefore), hw: fmt2(roiHw), total: '' },
+    { label: '分成比例',        ks: (shareKs * 100).toFixed(0) + '%', hw: (shareHw * 100).toFixed(0) + '%', total: '' },
+    { label: '分成后ROI',       ks: fmt2(res.roiAfter), hw: fmt2(res.roiAfterHw), total: '', cls: 'section' },
+    { label: '目标ROI',         ks: fmt2(target), hw: '—', total: '' },
+    { label: '考核GAP',         ks: fmt2(res.gap), hw: '—', total: '' },
+    { label: '补贴返利金',      ks: fmtWan(res.subsidy), hw: '—', total: '' },
+    { label: '广告收入(分成后)', ks: fmtWan(res.revenueKs), hw: res.hasSubsidy ? fmtWan(res.revenueHw) : '—', total: fmtWan(res.revenueKs + res.revenueHw) },
+    { label: '服务费',          ks: fmtWan(res.feeKs), hw: fmtWan(res.feeHw), total: fmtWan(res.feeKs + res.feeHw) },
+    { label: '整包收入',        ks: fmtWan(res.pkgKs), hw: res.hasSubsidy ? fmtWan(res.pkgHw) : '—', total: fmtWan(res.totalRevenue), cls: 'section' },
+  ];
+
+  tbody.innerHTML = rows.map(r => {
+    const cls = r.cls ? ' class="' + r.cls + '"' : '';
+    return '<tr' + cls + '><td>' + r.label + '</td><td class="num">' + r.ks + '</td><td class="num">' + r.hw + '</td><td class="num">' + r.total + '</td></tr>';
+  }).join('');
+
+  // Bottom summary row (仅合计)
+  tbody.innerHTML += '<tr><td><strong>毛利</strong></td><td class="num">—</td><td class="num">—</td><td class="num"><strong>' + fmtWan(res.profit) + '</strong></td></tr>';
+  tbody.innerHTML += '<tr><td><strong>毛利率</strong></td><td class="num">—</td><td class="num">—</td><td class="num"><strong style="color:#1565c0;font-size:16px;">' + (res.margin * 100).toFixed(1) + '%</strong></td></tr>';
+
+  // Chart
+  renderChart(shareKs, target, cap, roiHw, shareHw, fee, roi);
+
+  // Sensitivity data table
+  var stab = document.getElementById('sensitivity_tbody');
+  var rois = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.15];
+  // Add current ROI if not already in list
+  var rounded = Math.round(roi * 100) / 100;
+  if (rois.indexOf(rounded) < 0) {
+    rois.push(rounded);
+    rois.sort(function(a,b){return a-b;});
+  }
+  var html = '';
+  for (var i = 0; i < rois.length; i++) {
+    var r = rois[i];
+    var rr = calc(r, shareKs, target, cap, roiHw, shareHw, fee);
+    var isCur = Math.abs(r - roi) < 0.001;
+    var style = isCur ? ' style="background:#fff8e1;font-weight:600;"' : '';
+    html += '<tr' + style + '><td>' + (r * 100).toFixed(r === 1.15 ? 0 : 1) + '%</td>';
+    html += '<td class="num">' + fmtWan(rr.spend) + '</td>';
+    html += '<td class="num">' + fmtWan(rr.profit) + '</td>';
+    html += '<td class="num">' + (rr.margin * 100).toFixed(1) + '%</td></tr>';
+  }
+  stab.innerHTML = html;
+}
+
+// ======= Events =======
+Object.values(insp).forEach(el => el.addEventListener('input', render));
+
+// ======= Init =======
+render();
+</script>
+</body>
+</html>
