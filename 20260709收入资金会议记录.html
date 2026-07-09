@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>收入资金会议记录</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.75;
+    color: #222;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    font-size: 16px;
+  }
+  h1 { font-size: 28px; border-bottom: 2px solid #333; padding-bottom: 12px; margin-bottom: 32px; font-weight: 600; }
+  h2 { font-size: 22px; margin-top: 48px; margin-bottom: 16px; font-weight: 600; color: #1a1a1a; padding-left: 0; border-left: 4px solid #333; padding-left: 14px; }
+  h3 { font-size: 18px; margin-top: 28px; margin-bottom: 8px; font-weight: 600; color: #444; }
+  p { margin: 12px 0; }
+  ul { margin: 8px 0 16px 0; padding-left: 24px; }
+  li { margin: 6px 0; }
+  .meta { color: #888; font-size: 14px; margin-bottom: 32px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
+  .highlight { background: #fff8e1; padding: 16px 20px; border-radius: 6px; border-left: 4px solid #ffc107; margin: 20px 0; }
+  .highlight p { margin: 4px 0; }
+  .stat-box { background: #f5f5f5; padding: 16px 20px; border-radius: 6px; margin: 16px 0; }
+  .stat-box p { margin: 4px 0; }
+  .section-desc { color: #555; font-size: 15px; margin-bottom: 16px; }
+  strong { color: #111; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-family: "SF Mono", "Fira Code", monospace; font-size: 14px; }
+  .action-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+  .action-item:last-child { border-bottom: none; }
+  .tag { display: inline-block; background: #e8e8e8; padding: 2px 10px; border-radius: 12px; font-size: 12px; color: #666; margin-right: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px; }
+  th, td { border: 1px solid #ddd; padding: 10px 12px; text-align: left; }
+  th { background: #f8f8f8; font-weight: 600; }
+  .speaker { font-weight: 600; color: #333; }
+  blockquote { border-left: 3px solid #ccc; margin: 16px 0; padding: 8px 16px; color: #555; background: #fafafa; }
+</style>
+</head>
+<body>
+
+<h1>收入数据收集、结算流程与应收账款管理</h1>
+<div class="meta">
+  <p><strong>会议日期：</strong>2026年7月9日 &nbsp;|&nbsp; <strong>类型：</strong>收入资金专项会议</p>
+  <p><strong>参会角色：</strong>数据负责人（张亮）、财务负责人（俊宏）、业务负责人（李总/英测/橙子）、成本端负责人、运营负责人（婉婷/周林）、核算负责人</p>
+  <p><strong>核心议题：</strong>收入预估数据采集与结算流程梳理、Gap分析与上报标准、运营确认责任界定、应收账款管理与异常追踪</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>一、会议背景与核心议题</h2>
+<p>本次会议聚焦收入端的数据收集、结算对账流程以及应收账款管理。核心矛盾在于：收入数据缺少运营侧的确认环节，导致预估与结算之间的偏差无法被及时识别、解释和反馈，进而影响市场投放的ROI模型准确性与经营报表的可信度。</p>
+
+<div class="highlight">
+  <p><strong>会议共识框架：</strong></p>
+  <p>收入结算涉及三大核心环节：<strong>预估（数据采集）→ 结算（账单核对）→ 回款（应收账款管理）</strong>。每一个环节都存在信息断层，需要建立明确的确认与反馈机制。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>二、收入数据预估与采集逻辑</h2>
+
+<h3>2.1 数据采集方式</h3>
+<p>数据负责人（张亮）介绍收入预估数据的采集方式：</p>
+<ul>
+  <li><strong>数据来源：</strong>前往各开发者平台、变现平台获取原始流水数据</li>
+  <li><strong>匹配逻辑：</strong>与公司动容后台数据进行比对，发现Gap后手动调整</li>
+  <li><strong>覆盖范围：</strong>国内与海外所有收入平台，涉及300~400个账号</li>
+  <li><strong>获取形式：</strong>包括API拉取和后台截图下载两种方式</li>
+</ul>
+
+<h3>2.2 结算流程</h3>
+<ul>
+  <li><strong>账单下载：</strong>按照各平台出账时间下载账单（如Oppo每月8号出账）</li>
+  <li><strong>比对逻辑：</strong>将账单数据与月初预估数据进行比对</li>
+  <li><strong>偏差容忍度：</strong>单账户1000元人民币以内的偏差视为正常波动</li>
+  <li><strong>后续动作：</strong>无异常则进入开票申请、上传发票至后台的流程</li>
+</ul>
+
+<div class="stat-box">
+  <p><strong>国内：</strong>流程较成熟，Gap较小，主要问题为录入不及时或账户遗漏</p>
+  <p><strong>海外：</strong>复杂程度高，涉及多币种、多税率、多主体，Gap来源多样</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>三、Gap分析与异常判断标准</h2>
+
+<h3>3.1 正常波动范围</h3>
+<ul>
+  <li><strong>IP（内购）业务：</strong>单账户Gap在几元到一两千元范围内，视为API拉取与结算账单之间的正常数据波动</li>
+  <li><strong>变现场景：</strong>Gap同样不大，单App在几元到几千元区间</li>
+  <li><strong>影响因素：</strong>调单（回调数据遗漏）、API分批拉取的时间差</li>
+</ul>
+
+<h3>3.2 Gap是否需要上报</h3>
+<p>讨论焦点：究竟Gap值达到多少需要通报？</p>
+<ul>
+  <li>当前IP业务侧并未上报Gap，原因是<strong>不存在外商和人为补偿</strong>，Gap属于系统性的正常波动</li>
+  <li>但运营侧（李总/英测/橙子）认为，<strong>即使是在正常范围内的Gap，也需要让运营知悉</strong>，否则市场投放ROI模型会基于错误的数据进行测算</li>
+  <li>最终倾向：<strong>设定一个阈值</strong>（绝对值或比例），超过则发起询问流程；范围内则正常走结算</li>
+</ul>
+
+<div class="highlight">
+  <p><strong>关键洞察：</strong>"你这里面我们算的是一百块钱充值，我们自己算是回来七十八块钱。假设最终你回来了七十五块钱，如果不及时反馈，模型一直按七十八块钱算——虽然看起来差三块钱，差四个点，但计算模型会差巨大，可能从八个月回本变九个月。"</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>四、成本端流程参考与收入端差异</h2>
+
+<h3>4.1 成本端成熟流程</h3>
+<p>成本端负责人介绍当前的对账流程：</p>
+<ol>
+  <li><strong>月初拉取：</strong>从媒体后台拉取数据，比对动容后台数据</li>
+  <li><strong>第一道核对：</strong>将Gap发至投放人员核对群，由投放人员确认差异原因</li>
+  <li><strong>修正后台：</strong>投放人员检查是否存在账户未录入、配置错误等问题并修复</li>
+  <li><strong>付款流程二次确认：</strong>经过业务端审核，提供截图，确认无误后放行</li>
+</ol>
+
+<div class="stat-box">
+  <p><strong>耗时：</strong>国内核对较快，海外因需技术排查约需1~2天</p>
+  <p><strong>原则：</strong>投放结算数据以媒体后台的财务模块结算数据为准</p>
+</div>
+
+<h3>4.2 收入端的特殊性与复杂性</h3>
+<p>收入端不能简单照搬成本端的流程，原因在于：</p>
+<ul>
+  <li><strong>数据不可人工干预：</strong>收入数据不应被随意修改，否则拉取数据失去意义</li>
+  <li><strong>平台差异大：</strong>广告（API拉取）vs 付费（用户支付回调），数据口径不同</li>
+  <li><strong>复杂的税与分成：</strong>不同国家税率不同，平台分成比例各异</li>
+  <li><strong>用户层数据缺失：</strong>工具类产品缺少用户层级的订阅数据</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>五、运营确认流程的建立</h2>
+
+<h3>5.1 当前问题：运营不承担确认责任</h3>
+<p>会议指出，当前收入端最大的流程缺陷是<strong>运营同学不承担任何确认工作</strong>：</p>
+<ul>
+  <li>相比成本端——投放组长在预估和结算两个环节都做确认——收入端完全没有运营介入</li>
+  <li>运营不了解掉单率，不清楚最终能回收多少收入</li>
+  <li>市场端根据不准确的结算比例测算ROI，导致回本周期判断失真</li>
+</ul>
+
+<h3>5.2 确认流程设计</h3>
+<p>会议明确了需要建立的确认机制：</p>
+<ul>
+  <li><strong>时间节点：</strong>每月4号左右，数据方（张亮）整理完数据后发起给各业务线运营</li>
+  <li><strong>确认内容：</strong>后台数据与平台数据的差异分析、Gap原因说明、是否接受</li>
+  <li><strong>责任到人：</strong>每条业务线指定负责人（如橙子负责IP游戏、林总负责工具、婉婷负责网厅等）</li>
+  <li><strong>反馈闭环：</strong>运营确认后，数据方调整数据，经营报表对齐</li>
+</ul>
+
+<div class="highlight">
+  <p><strong>明确结论：</strong>游戏运营同学每个月应将"应收与实收对比"作为常规动作，无论差异是1%还是0.1%，都必须复核并修正，将信息发布出来。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>六、苹果/谷歌平台的分成与税务复杂性</h2>
+
+<h3>6.1 苹果平台的计算逻辑</h3>
+<p>苹果的分成与税务计算是本次会议讨论的复杂性焦点：</p>
+
+<table>
+  <tr><th>因素</th><th>说明</th></tr>
+  <tr><td>国家差异</td><td>不同国家的增值税税率不同，导致最终结算金额不同</td></tr>
+  <tr><td>订阅用户分层</td><td>一年以内用户85%分成，一年以上用户额外+2个点（87%）</td></tr>
+  <tr><td>产品类型</td><td>游戏（可拆到国家层） vs 工具（需拆到用户层）</td></tr>
+  <tr><td>结算周期</td><td>非自然月结算（如6月25日~7月25日），与财务自然月口径不一致</td></tr>
+  <tr><td>汇率折算</td><td>苹果每月为各币种制定结算汇率，延迟两个月才公布</td></tr>
+</table>
+
+<h3>6.2 平台计算结果示例</h3>
+<p>以美妆产品苹果支付渠道为例的推算过程：</p>
+<ul>
+  <li>苹果后台充值流水：<strong>77万美金</strong>（约523万人民币，按6.8汇率）</li>
+  <li>预估分成后收入：<strong>397万人民币</strong></li>
+  <li>实际综合比例：<strong>397÷523 ≈ 75.9%</strong></li>
+  <li>其中纯付费部分约62%，加上约10%的广告收入后综合约为65%</li>
+  <li>七月份因规则变化，综合比例可能从76%降至<strong>62~65%区间</strong></li>
+</ul>
+
+<div class="highlight">
+  <p><strong>重要结论：</strong>"非自然月结算不是问题点，是可以算出来的。"——只要规则确定，可以选择对应日期区间的充值金额来比对。</p>
+</div>
+
+<h3>6.3 当前折中方案</h3>
+<p>由于中台系统无法支持用户层级的精细计算，当前方案为：</p>
+<ul>
+  <li><strong>按比例调整：</strong>拿苹果平台数据反推一个综合比例，在动容后台的"变现账号配置"界面按账号层级设置比例</li>
+  <li><strong>局限性：</strong>这种"黑盒式"比例调整无法定位具体问题——"上个月100万充值结了78万，这个月100万充值结了75万，少在哪？"</li>
+  <li><strong>游戏 vs 工具：</strong>游戏可拆到国家层级计算（已让穆斌处理），工具因涉及用户层级尚无法精确计算</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>七、IAP游戏与工具类产品的差异</h2>
+
+<h3>7.1 IAP游戏</h3>
+<ul>
+  <li><strong>计算层级：</strong>国家层级（税率固定、平台分成相对固定）</li>
+  <li><strong>可行方案：</strong>让中台配置相应税率和分成比例，可以算出接近结算的结果</li>
+  <li><strong>状态：</strong>已让穆斌加入税与平台分成处理，可以做到100%比例配置</li>
+  <li><strong>海外IP游戏：</strong>每月必须非常及时地算出准确数据，反馈到市场端和运营端</li>
+</ul>
+
+<h3>7.2 工具类产品（订阅）</h3>
+<ul>
+  <li><strong>计算层级：</strong>用户层级（每个用户的订阅时长状态不同）</li>
+  <li><strong>核心瓶颈：</strong>动容系统无用户层数据——不知道每个用户充值多少、是7天前还是7天后、处于什么订阅状态</li>
+  <li><strong>当前处理：</strong>只能账号层级给一个综合比例，拿苹果数据反推</li>
+  <li><strong>风险：</strong>"比如婷婷他们推IP清理iOS，回本周期看起来不错，但实际上没有人跟踪到究竟是不是回了这么多钱"</li>
+</ul>
+
+<div class="stat-box">
+  <p><strong>游戏：</strong>可精确到国家层 ✓ &nbsp;&nbsp;|&nbsp;&nbsp; <strong>工具：</strong>需精确到用户层 ✗（中台不支持）</p>
+  <p>工具产品当前缺乏运营对用户层的管理，无法追踪用户何时进入、订阅了多久。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>八、应收账款管理与异常追踪</h2>
+
+<h3>8.1 应收账款表现状</h3>
+<p>当前使用飞书Excel表进行应收账款管理，多人在其中更新：</p>
+<ul>
+  <li><strong>张亮：</strong>月初补充后台拉取数据，出结算单时补充结算数据</li>
+  <li><strong>丽君：</strong>补充开票金额</li>
+  <li><strong>刘芳：</strong>补充收款时间、回款金额，核实与开票金额是否一致</li>
+</ul>
+
+<h3>8.2 待完善的问题</h3>
+<ul>
+  <li><strong>币种问题：</strong>当前全部折算为人民币，但汇率的来源和时点不透明。需按原始币种（美元/港币/新加坡币/澳元）分开列示</li>
+  <li><strong>汇率缺失：</strong>财务系统使用的汇率来自API网站（月初汇率），但表中未标注当前执行汇率</li>
+  <li><strong>账期缺失：</strong>未标注各平台的标准账期（N+1/N+2/N+3），无法自动判断是否异常</li>
+  <li><strong>异常原因未备注：</strong>长期挂账的款项缺少原因说明（未开票/平台违规/账号封禁等）</li>
+  <li><strong>帮助文档不完善：</strong>中台需求文档的计算规则定义不清晰，字段定义需要更规范</li>
+</ul>
+
+<h3>8.3 改进方案</h3>
+<ol>
+  <li>在应收账款表中加入<strong>账期列</strong>（N+1/N+2/N+3），超过账期末收回的自动标记为异常</li>
+  <li>按<strong>原始币种</strong>单独列示金额，标注当月执行汇率</li>
+  <li>对异常项补充<strong>原因备注</strong>（未开票/限额/平台违规/账号封禁等）</li>
+  <li><strong>月度盘点：</strong>每月盘一次长期挂账的应收账款，催促相关方处理</li>
+  <li>将应收账款表与<strong>资金预估表</strong>对齐，确保经营报表与资金表口径一致</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2>九、腾讯账期与押金策略</h2>
+
+<h3>9.1 当前账期状况</h3>
+<ul>
+  <li>腾讯计算机部分：<strong>N+2</strong>（四月份账款六月份提款）</li>
+  <li>苹果充值：通过财务通直接到账，<strong>每周自动提现</strong></li>
+  <li>海外平台（Google、TakeTalk等）：<strong>N+1</strong>，基本准时</li>
+</ul>
+
+<h3>9.2 押金换账期策略</h3>
+<p>腾讯提供押金缩短账期的方案：</p>
+<table>
+  <tr><th>押金金额</th><th>账期</th></tr>
+  <tr><td>不交押金</td><td>N+2</td></tr>
+  <tr><td>押1万/App</td><td>N+1</td></tr>
+  <tr><td>押25万/App</td><td>T+7 或 T+1</td></tr>
+</table>
+
+<div class="highlight">
+  <p><strong>讨论结论：</strong></p>
+  <p>对于持续跑量的大包，押金策略值得评估。难点在于：①押金退还流程繁琐（需两三个月）；②历史遗留的"垃圾包"押金一直压在里面无法取出。建议在规模放量前保持1万押金，大量放量时再考虑升级。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>十、信用卡预付与达人推广</h2>
+
+<h3>10.1 TikTok达人推广的信用卡支付</h3>
+<ul>
+  <li>当前使用虚拟信用卡进行TikTok达人推广消费，每天约100多美金</li>
+  <li>信用卡内余额不足时，扣款失败会产生手续费</li>
+  <li>流程：达人运营提交飞书申请→财务预充→TikTok自动扣款</li>
+</ul>
+
+<h3>10.2 确认的流程</h3>
+<ul>
+  <li><strong>频率：</strong>每月底申请一次，预充下个月额度</li>
+  <li><strong>管控：</strong>不需要精细化管控单笔消费，只需月度总额对账，归入推广费</li>
+  <li><strong>余额处理：</strong>用不完可提现</li>
+  <li><strong>风险提醒：</strong>不要充太多钱，避免平台爆量导致超额扣款</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>十一、流程注册与账号管理</h2>
+
+<ul>
+  <li><strong>周林：</strong>正在建两个飞书流程——①财务核算主体的注册流程；②主体变更情况下的账号申请流程</li>
+  <li><strong>总表规划：</strong>建一套涵盖所有公司（国内/海外）的收入账号总表</li>
+  <li><strong>边界界定：</strong>涉及结算的变现账号需走流程；开发者账号（仅用于买量）不涉及结算，不需要纳入</li>
+  <li><strong>收款账号变更：</strong>必须走流程通知所有相关人员，不能仅告知个别人</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>十二、后续行动项</h2>
+
+<div class="action-item">
+  <p><strong>1. 建立运营收入确认流程</strong> <span class="tag">责任人：张亮</span> <span class="tag">时间：每月4号发起</span></p>
+  <p>每月4号前由数据方整理各业务线预估数据与平台数据的Gap列表，发送给各业务线运营负责人确认原因及是否接受。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>2. 设定Gap上报阈值</strong> <span class="tag">责任人：待定</span></p>
+  <p>制定明确的Gap上报标准（绝对值和/或比例阈值），范围内正常走结算，超过则发起询问流程。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>3. 完善应收账款表</strong> <span class="tag">责任人：张亮/刘芳</span></p>
+  <p>加入账期列（N+1/N+2/N+3），按原始币种分开列示，标注当月汇率，补充异常原因备注。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>4. IAP游戏分成规则系统化</strong> <span class="tag">责任人：穆斌/张亮</span></p>
+  <p>让中台配置各国家税率和平台分成比例，使游戏应用的结算计算自动化，降低对人工调整系数的依赖。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>5. 工具类产品帮助文档完善</strong> <span class="tag">责任人：中台/张亮</span></p>
+  <p>整理工具类产品的收入计算规则、字段定义和配置逻辑，形成帮助文档，同步给中台相关人员。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>6. 经营报表与资金表口径对齐</strong> <span class="tag">责任人：俊宏/张亮/刘芳</span></p>
+  <p>确保经营报表、应收账款表和资金预估表的数据口径一致，加入返货余额说明。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>7. 收入账号总表建设</strong> <span class="tag">责任人：周林</span></p>
+  <p>建立涵盖所有公司（国内/国外）涉及收入结算的账号总表，配合飞书审批流程。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>8. 汇率信息列示</strong> <span class="tag">责任人：中台</span></p>
+  <p>在财务系统中加入当月执行汇率字段，各币种的原始金额单独列示。</p>
+</div>
+
+<div class="action-item">
+  <p><strong>9. 海外收入流程专项讨论</strong> <span class="tag">责任人：婉婷/张亮</span></p>
+  <p>海外收入的结算流程和优化方案需要单独、细分的后续会议进行讨论。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>附录：关键定义与口径说明</h2>
+
+<table>
+  <tr><th>术语</th><th>定义</th></tr>
+  <tr><td>预估收入</td><td>月初从各平台API拉取或后台导出的原始流水数据经初步处理后得到的收入预测</td></tr>
+  <tr><td>结算数据</td><td>各平台正式出账后的账单金额，以媒体后台财务模块的数据为准</td></tr>
+  <tr><td>回款</td><td>实际到账金额，对应应收账款表中的回款记录</td></tr>
+  <tr><td>Gap（偏差）</td><td>预估数据与结算数据之间的差异，可能源于调单、汇率、税差、配置问题等</td></tr>
+  <tr><td>调单率</td><td>用户支付成功但回调数据丢失的比例，一般在千分之几水平</td></tr>
+  <tr><td>N+1/N+2</td><td>收入确认月份与回款月份的间隔，如N+2即2个月后回款</td></tr>
+  <tr><td>综合比例</td><td>实际结算金额与充值流水的比值，受平台分成、增值税、订阅用户结构等多因素影响</td></tr>
+</table>
+
+<hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;">
+<p style="color: #888; font-size: 14px; text-align: center;">本记录根据2026年7月9日收入资金会议录音整理，忠于会议意图与核心结论。</p>
+
+</body>
+</html>
